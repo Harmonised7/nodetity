@@ -18,18 +18,18 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
 {
     private List<ItemStack> items;
 
-    public NodeTileEntity(TileEntityType<?> tileEntityTypeIn)
+    public NodeTileEntity( TileEntityType<?> tileEntityTypeIn )
     {
-        super(tileEntityTypeIn);
+        super( tileEntityTypeIn );
         this.items = new ArrayList<>();
     }
 
     @Override
-    public int[] getSlotsForFace( Direction side )
+    public void tick()
     {
-        return new int[0];
+        System.out.println( "Ticking a NodeTileEntity!!!" );
     }
-
+    
     @Override
     public void read( BlockState state, CompoundNBT nbt )
     {
@@ -43,13 +43,19 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, @Nullable Direction direction)
+    public int[] getSlotsForFace( Direction side )
+    {
+        return new int[0];
+    }
+
+    @Override
+    public boolean canInsertItem( int index, ItemStack itemStackIn, @Nullable Direction direction )
     {
         return false;
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction)
+    public boolean canExtractItem( int index, ItemStack stack, Direction direction )
     {
         return false;
     }
@@ -67,43 +73,37 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
     }
 
     @Override
-    public ItemStack getStackInSlot(int index)
+    public ItemStack getStackInSlot( int index )
     {
         return null;
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack decrStackSize( int index, int count )
     {
         return null;
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
+    public ItemStack removeStackFromSlot( int index )
     {
         return null;
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setInventorySlotContents( int index, ItemStack stack )
     {
 
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean isUsableByPlayer( PlayerEntity player )
     {
         return false;
     }
 
     @Override
     public void clear()
-    {
-
-    }
-
-    @Override
-    public void tick()
     {
 
     }

@@ -21,7 +21,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: "com.wynprice.cursemaven"
 
-version = '1.16.4-0.01'
+version = '1.16.4-0.001'
 group = 'harmonised.nodetity'
 archivesBaseName = 'Nodetity'
 

@@ -2,9 +2,11 @@ package harmonised.nodetity;
 
 import harmonised.nodetity.nodetity_saved_data.NodetitySavedData;
 import harmonised.nodetity.util.Reference;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -25,7 +27,6 @@ public class NodetityMod
             .networkProtocolVersion( () -> PROTOCOL_VERSION )
             .simpleChannel();
 
-
     public NodetityMod()
     {
         FMLJavaModLoadingContext.get().getModEventBus().addListener( this::modsLoading );
@@ -33,6 +34,8 @@ public class NodetityMod
         MinecraftForge.EVENT_BUS.addListener( this::serverAboutToStart );
         MinecraftForge.EVENT_BUS.addListener( this::registerCommands );
         MinecraftForge.EVENT_BUS.addListener( this::serverStart );
+
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener( TileEntityType.class, NodetityMod::handleTileEntityRegister );
 
 //        DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> Requirements::init );
 
@@ -57,5 +60,10 @@ public class NodetityMod
     private void serverStart( FMLServerStartingEvent event )
     {
         NodetitySavedData.init( event.getServer() );
+    }
+
+    public static void handleTileEntityRegister(RegistryEvent.Register<TileEntityType<?>> event )
+    {
+
     }
 }
