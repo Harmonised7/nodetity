@@ -1,0 +1,14 @@
+modLoader="javafml"
+       loaderVersion="[31.1,)"
+
+        license="All rights reserved"
+       [[mods]]
+           modId="nodetity"
+           version="${file.jarVersion}"
+           displayName="Nodetity"
+           displayURL="https://www.curseforge.com/minecraft/mc-mods/nodetity"
+           credits="Cats are neat"
+           authors="Harmonised"
+           description='''
+           Node stuff
+           '''

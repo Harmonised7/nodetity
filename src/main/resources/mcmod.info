@@ -1,0 +1,16 @@
+[
+{
+  "modid": "nodetity",
+  "name": "Nodetity",
+  "description": "It does things",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Harmonised#6495"],
+  "credits": "Cats are neat",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
