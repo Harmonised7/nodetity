@@ -1,5 +1,6 @@
 package harmonised.nodetity.tile_entities;
 
+import harmonised.nodetity.registries.ModTEs;
 import harmonised.nodetity.registries.RegistryHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +22,7 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
 
     public NodeTileEntity()
     {
-        super( RegistryHandler.NODE.get() );
+        super( ModTEs.NODE.get() );
     }
 
     public NodeTileEntity( TileEntityType<?> tileEntityTypeIn )
