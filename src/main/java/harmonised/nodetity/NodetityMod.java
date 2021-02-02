@@ -1,6 +1,7 @@
 package harmonised.nodetity;
 
 import harmonised.nodetity.nodetity_saved_data.NodetitySavedData;
+import harmonised.nodetity.registries.RegistryHandler;
 import harmonised.nodetity.util.Reference;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -35,8 +36,7 @@ public class NodetityMod
         MinecraftForge.EVENT_BUS.addListener( this::registerCommands );
         MinecraftForge.EVENT_BUS.addListener( this::serverStart );
 
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener( TileEntityType.class, NodetityMod::handleTileEntityRegister );
-
+        RegistryHandler.init();
 //        DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> Requirements::init );
 
     }
@@ -60,10 +60,5 @@ public class NodetityMod
     private void serverStart( FMLServerStartingEvent event )
     {
         NodetitySavedData.init( event.getServer() );
-    }
-
-    public static void handleTileEntityRegister(RegistryEvent.Register<TileEntityType<?>> event )
-    {
-
     }
 }

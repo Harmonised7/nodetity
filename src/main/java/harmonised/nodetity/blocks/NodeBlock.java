@@ -1,5 +1,6 @@
 package harmonised.nodetity.blocks;
 
+import harmonised.nodetity.registries.RegistryHandler;
 import harmonised.nodetity.tile_entities.NodeTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,7 +24,7 @@ public class NodeBlock extends Block
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity( BlockState state, IBlockReader world )
     {
         return new NodeTileEntity();
     }
