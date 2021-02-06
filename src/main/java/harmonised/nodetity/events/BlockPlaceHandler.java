@@ -2,6 +2,8 @@ package harmonised.nodetity.events;
 
 import harmonised.nodetity.data.Data;
 import harmonised.nodetity.data.NodeNetwork;
+import harmonised.nodetity.util.Util;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 
@@ -9,9 +11,11 @@ public class BlockPlaceHandler
 {
     public static void handleBlockPlaced( BlockEvent.EntityPlaceEvent event )
     {
-        NodeNetwork nodeNetwork = Data.getOrCreateNodeNetwork( (World) event.getWorld(), 1, event.getPos() );
+        World world = (World) event.getWorld();
+        NodeNetwork nodeNetwork = Data.getOrCreateNodeNetwork( world, 1, event.getPos() );
+        ResourceLocation resLoc = Util.getDimensionResLoc( world );
 
-        nodeNetwork.nodes.add( event.getPos() );
-        System.out.println( "Added to Network " + nodeNetwork.id );
+        nodeNetwork.getNodes( resLoc ).add( event.getPos() );
+        System.out.println( "Added to Network " + nodeNetwork.getId() );
     }
 }

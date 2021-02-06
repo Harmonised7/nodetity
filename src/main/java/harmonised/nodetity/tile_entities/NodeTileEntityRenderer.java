@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.world.World;
@@ -36,6 +37,7 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
     public void render(NodeTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
         World world = tileEntityIn.getWorld();
+        ResourceLocation resLoc = Util.getDimensionResLoc( world );
         BlockPos originPos = tileEntityIn.getPos();
         NodeNetwork nodeNetwork = Data.findNearbyNodeNetwork( world, originPos );
         if( nodeNetwork == null )
@@ -51,7 +53,7 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
         Matrix4f matrix4f1 = matrixStackIn.getLast().getMatrix();
         Map<BlockPos, Set<BlockPos>> lines = new HashMap<>();
 
-        for( BlockPos thisNodePos : nodeNetwork.nodes )
+        for( BlockPos thisNodePos : nodeNetwork.getNodes( resLoc ) )
         {
             BlockPos relThisNodePos = Util.getDifference( originPos, thisNodePos );
             Set<BlockPos> nearbyNodes = Data.getNearbyNodePos( world, tileEntityIn.getNetworkId(), thisNodePos );

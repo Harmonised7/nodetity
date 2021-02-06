@@ -12,23 +12,19 @@ import java.util.Set;
 
 public class Data
 {
-    public static Map<Integer, Map<ResourceLocation, NodeNetwork>> nodeNetworks = new HashMap<>();
+    public static Map<Integer, NodeNetwork> nodeNetworks = new HashMap<>();
 
     public static NodeNetwork findNearbyNodeNetwork( World world, BlockPos pos )
     {
         ResourceLocation resLoc = Util.getDimensionResLoc( world );
         for( int id : nodeNetworks.keySet() )
         {
-            Map<ResourceLocation, NodeNetwork> worldNodeNetwork = nodeNetworks.get( id );
-            if( worldNodeNetwork.containsKey( resLoc ) )
-            {
-                NodeNetwork nodeNetwork = worldNodeNetwork.get( resLoc );
-                for( BlockPos nodePos : nodeNetwork.nodes )
-                {
-                    if( Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
-                        return nodeNetwork;
-                }
-            }
+            NodeNetwork nodeNetwork = nodeNetworks.get( id );
+           for( BlockPos nodePos : nodeNetwork.getNodes( resLoc ) )
+           {
+               if( Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
+                   return nodeNetwork;
+           }
         }
 
         return null;
@@ -42,12 +38,12 @@ public class Data
         {
             id++;
         }
-        HashSet<BlockPos> nodes = new HashSet<>();
-        nodes.add( pos );
-        Map<ResourceLocation, NodeNetwork> globalNodeNetwork = new HashMap<>();
-        globalNodeNetwork.put( resLoc, new NodeNetwork( id, nodes ) );
-        nodeNetworks.put( id, globalNodeNetwork );
-        return globalNodeNetwork.get( resLoc );
+        Map<ResourceLocation, Set<BlockPos>> nodes = new HashMap<>();
+        nodes.put( resLoc, new HashSet<>() );
+        nodes.get( resLoc ).add( pos );
+        NodeNetwork nodeNetwork = new NodeNetwork( id, nodes );
+        nodeNetworks.put( id, nodeNetwork );
+        return nodeNetworks.get( id );
     }
 
     public static NodeNetwork findOrCreateNetwork( World world, BlockPos pos )
@@ -58,10 +54,7 @@ public class Data
 
     public static NodeNetwork getNodeNetwork( World world, int id )
     {
-        if( nodeNetworks.containsKey( id ) )
-            return nodeNetworks.get( id ).get( Util.getDimensionResLoc( world ) );
-        else
-            return null;
+        return nodeNetworks.get( id );
     }
 
     public static NodeNetwork getOrCreateNodeNetwork( World world, int id, BlockPos pos )
@@ -79,10 +72,10 @@ public class Data
         if( nodeNetworks.containsKey( id ) )
         {
             ResourceLocation resLoc = Util.getDimensionResLoc( world );
-            NodeNetwork nodeNetwork = nodeNetworks.get( id ).get( resLoc );
+            NodeNetwork nodeNetwork = nodeNetworks.get( id );
             if( nodeNetwork != null )
             {
-                for( BlockPos nodePos : nodeNetwork.nodes )
+                for( BlockPos nodePos : nodeNetwork.getNodes( resLoc ) )
                 {
                     if( !pos.equals( nodePos ) && Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
                         nearbyNodes.add( nodePos );

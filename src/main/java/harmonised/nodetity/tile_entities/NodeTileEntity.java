@@ -35,7 +35,7 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
 
     public int getNetworkId()
     {
-        return nodeNetwork.id;
+        return nodeNetwork.getId();
     }
 
     @Override
@@ -48,9 +48,9 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
     public void setWorldAndPos( World world, BlockPos pos )
     {
         super.setWorldAndPos( world, pos );
-        nodeNetwork = Data.getOrCreateNodeNetwork( world, 1, pos );
+        nodeNetwork = Data.getNodeNetwork( world, 1 );
         renderBoundingBox = new AxisAlignedBB( new BlockPos( pos.getX()-32, pos.getY()-32, pos.getZ()-32 ), new BlockPos( pos.getX()+32, pos.getY()+32, pos.getZ()+32 ) );
-        System.out.println( "Master Node placed with id " + nodeNetwork.id );
+        System.out.println( "Master Node placed with id " + nodeNetwork.getId() );
     }
 
     @Override
