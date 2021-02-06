@@ -1,7 +1,9 @@
 package harmonised.nodetity.tile_entities;
 
+import harmonised.nodetity.data.Data;
+import harmonised.nodetity.data.NodeNetwork;
 import harmonised.nodetity.registries.ModTEs;
-import harmonised.nodetity.registries.RegistryHandler;
+import harmonised.nodetity.util.Util;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
@@ -9,8 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -19,22 +22,30 @@ import java.util.List;
 public class NodeTileEntity extends TileEntity implements ISidedInventory, ITickableTileEntity
 {
     private List<ItemStack> items;
+    private NodeNetwork nodeNetwork;
 
     public NodeTileEntity()
     {
         super( ModTEs.NODE.get() );
-    }
-
-    public NodeTileEntity( TileEntityType<?> tileEntityTypeIn )
-    {
-        super( tileEntityTypeIn );
         this.items = new ArrayList<>();
     }
 
     @Override
+    public void setWorldAndPos( World world, BlockPos pos )
+    {
+        super.setWorldAndPos(world, pos);
+        nodeNetwork = Data.findOrCreateNetwork( pos );
+        System.out.println( "Node placed with id " + nodeNetwork.id );
+    }
+
+    //    public NodeTileEntity( TileEntityType<?> tileEntityTypeIn )
+//    {
+//        super( tileEntityTypeIn );
+//    }
+
+    @Override
     public void tick()
     {
-        System.out.println( "Ticking a NodeTileEntity!!!" );
     }
     
     @Override

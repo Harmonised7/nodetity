@@ -1,5 +1,7 @@
 package harmonised.nodetity.registries;
 
+import harmonised.nodetity.blocks.NodeBlock;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -11,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ModBlocks
 {
-    public static final RegistryObject<Block> NODE_BLOCK = RegistryHandler.BLOCKS.register("node_block", () -> new Block( Block.Properties.create( Material.BUBBLE_COLUMN ) ) );
+    public static final RegistryObject<Block> NODE_BLOCK = register("node_block", () -> new NodeBlock( AbstractBlock.Properties.create( Material.BUBBLE_COLUMN ) ) );
 
     public static void register() {}
 
