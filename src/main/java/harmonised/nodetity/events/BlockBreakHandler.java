@@ -8,7 +8,7 @@ public class BlockBreakHandler
 {
     public static void handleBlocKBreak( BlockEvent.BreakEvent event )
     {
-        NodeNetwork nodeNetwork = Data.getNearbyNodeNetwork( event.getPos() );
+        NodeNetwork nodeNetwork = Data.findNearbyNodeNetwork( event.getPos() );
         if( nodeNetwork != null )
         {
             nodeNetwork.nodes.remove( event.getPos() );

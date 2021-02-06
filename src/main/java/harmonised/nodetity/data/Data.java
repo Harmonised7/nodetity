@@ -12,7 +12,7 @@ public class Data
 {
     public static Map<Integer, NodeNetwork> nodeNetworks = new HashMap<>();
 
-    public static NodeNetwork getNearbyNodeNetwork( BlockPos pos )
+    public static NodeNetwork findNearbyNodeNetwork( BlockPos pos )
     {
         for( int id : nodeNetworks.keySet() )
         {
@@ -27,7 +27,7 @@ public class Data
         return null;
     }
 
-    private static NodeNetwork createNodeNetwork( BlockPos pos )
+    public static NodeNetwork createNodeNetwork( BlockPos pos )
     {
         int i = 0;
 
@@ -46,8 +46,13 @@ public class Data
 
     public static NodeNetwork findOrCreateNetwork( BlockPos pos )
     {
-        NodeNetwork nodeNetwork = getNearbyNodeNetwork( pos );
+        NodeNetwork nodeNetwork = findNearbyNodeNetwork( pos );
         return nodeNetwork == null ? createNodeNetwork( pos ) : nodeNetwork;
+    }
+
+    public static NodeNetwork getNodeNetwork(int id )
+    {
+        return nodeNetworks.get( id );
     }
 
     public static Set<BlockPos> getNearbyNodePos(int id, BlockPos pos )

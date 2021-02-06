@@ -8,7 +8,7 @@ public class BlockPlaceHandler
 {
     public static void handleBlockPlaced( BlockEvent.EntityPlaceEvent event )
     {
-        NodeNetwork nodeNetwork = Data.getNearbyNodeNetwork( event.getPos() );
+        NodeNetwork nodeNetwork = Data.findNearbyNodeNetwork( event.getPos() );
         if( nodeNetwork != null )
         {
             nodeNetwork.nodes.add( event.getPos() );

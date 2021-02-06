@@ -21,15 +21,17 @@ import java.util.List;
 
 public class NodeTileEntity extends TileEntity implements ISidedInventory, ITickableTileEntity
 {
-    private static int renderBoundingBoxRange = 32;
-    private AxisAlignedBB renderBoundingBox;
-    private List<ItemStack> items;
+    final private static int renderBoundingBoxRange = 32;
+    final private List<ItemStack> items;
     private NodeNetwork nodeNetwork;
+
+    private AxisAlignedBB renderBoundingBox;
 
     public NodeTileEntity()
     {
         super( ModTEs.MASTER_NODE.get() );
         this.items = new ArrayList<>();
+        nodeNetwork = Data.getNodeNetwork( 1 );
     }
 
     public int getNetworkId()
@@ -47,7 +49,8 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
     public void setWorldAndPos( World world, BlockPos pos )
     {
         super.setWorldAndPos(world, pos);
-        nodeNetwork = Data.findOrCreateNetwork( pos );
+        if( nodeNetwork == null )
+            nodeNetwork = Data.createNodeNetwork( pos );
         renderBoundingBox = new AxisAlignedBB( new BlockPos( pos.getX()-32, pos.getY()-32, pos.getZ()-32 ), new BlockPos( pos.getX()+32, pos.getY()+32, pos.getZ()+32 ) );
         System.out.println( "Master Node placed with id " + nodeNetwork.id );
     }
