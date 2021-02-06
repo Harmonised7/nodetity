@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,8 +35,9 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
     @Override
     public void render(NodeTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
+        World world = tileEntityIn.getWorld();
         BlockPos originPos = tileEntityIn.getPos();
-        NodeNetwork nodeNetwork = Data.findNearbyNodeNetwork( originPos );
+        NodeNetwork nodeNetwork = Data.findNearbyNodeNetwork( world, originPos );
         if( nodeNetwork == null )
         {
             System.out.println( "ERROR, NULL NODENETWORK" );
@@ -52,7 +54,7 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
         for( BlockPos thisNodePos : nodeNetwork.nodes )
         {
             BlockPos relThisNodePos = Util.getDifference( originPos, thisNodePos );
-            Set<BlockPos> nearbyNodes = Data.getNearbyNodePos( tileEntityIn.getNetworkId(), thisNodePos );
+            Set<BlockPos> nearbyNodes = Data.getNearbyNodePos( world, tileEntityIn.getNetworkId(), thisNodePos );
             for( BlockPos nextNodePos : nearbyNodes )
             {
                 BlockPos relNextNodePos = Util.getDifference( originPos, nextNodePos );

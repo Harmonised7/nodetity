@@ -24,6 +24,6 @@ public class EventHandler
 	@SubscribeEvent
 	public static void blockRemoved( BlockEvent.BreakEvent event )
 	{
-		BlockBreakHandler.handleBlocKBreak( event );
+		BlockBreakHandler.handleBlockBreak( event );
 	}
 }
