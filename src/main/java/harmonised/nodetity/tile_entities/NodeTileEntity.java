@@ -3,7 +3,6 @@ package harmonised.nodetity.tile_entities;
 import harmonised.nodetity.data.Data;
 import harmonised.nodetity.data.NodeNetwork;
 import harmonised.nodetity.registries.ModTEs;
-import harmonised.nodetity.util.Util;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
@@ -26,8 +25,13 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
 
     public NodeTileEntity()
     {
-        super( ModTEs.NODE.get() );
+        super( ModTEs.MASTER_NODE.get() );
         this.items = new ArrayList<>();
+    }
+
+    public int getNetworkId()
+    {
+        return nodeNetwork.id;
     }
 
     @Override
@@ -35,13 +39,8 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
     {
         super.setWorldAndPos(world, pos);
         nodeNetwork = Data.findOrCreateNetwork( pos );
-        System.out.println( "Node placed with id " + nodeNetwork.id );
+        System.out.println( "Master Node placed with id " + nodeNetwork.id );
     }
-
-    //    public NodeTileEntity( TileEntityType<?> tileEntityTypeIn )
-//    {
-//        super( tileEntityTypeIn );
-//    }
 
     @Override
     public void tick()

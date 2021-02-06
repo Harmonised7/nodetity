@@ -1,13 +1,12 @@
 package harmonised.nodetity;
 
+import harmonised.nodetity.client.ClientHandler;
 import harmonised.nodetity.nodetity_saved_data.NodetitySavedData;
 import harmonised.nodetity.registries.RegistryHandler;
 import harmonised.nodetity.util.Reference;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -47,6 +46,7 @@ public class NodetityMod
 
     private void clientLoading( FMLClientSetupEvent event )
     {
+        ClientHandler.init();
     }
 
     private void serverAboutToStart( FMLServerAboutToStartEvent event )

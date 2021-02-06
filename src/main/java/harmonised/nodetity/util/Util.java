@@ -13,6 +13,11 @@ public class Util
 
     public static double getDistance( BlockPos pos1, BlockPos pos2 )
     {
-        return Math.sqrt( Math.pow( pos1.getX() - pos2.getX(), 2 ) + Math.pow( pos1.getY() - pos2.getY(), 2 ) + Math.pow( pos1.getZ() - pos2.getZ(), 2 ) );
+        return Math.sqrt( Math.pow( pos2.getX() - pos1.getX(), 2 ) + Math.pow( pos2.getY() - pos1.getY(), 2 ) + Math.pow( pos2.getZ() - pos1.getZ(), 2 ) );
+    }
+
+    public static BlockPos getDifference( BlockPos pos1, BlockPos pos2 )
+    {
+        return new BlockPos( pos2.getX() - pos1.getX(), pos2.getY() - pos1.getY(), pos2.getZ() - pos1.getZ() );
     }
 }

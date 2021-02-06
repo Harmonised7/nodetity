@@ -6,18 +6,20 @@ import net.minecraft.util.math.BlockPos;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Data
 {
     public static Map<Integer, NodeNetwork> nodeNetworks = new HashMap<>();
 
-    public static NodeNetwork findNodeNetwork( BlockPos pos )
+    public static NodeNetwork getNearbyNodeNetwork( BlockPos pos )
     {
         for( int id : nodeNetworks.keySet() )
         {
-            for( BlockPos nodePos : nodeNetworks.get( id ).nodes )
+            NodeNetwork nodeNetwork = nodeNetworks.get( id );
+            for( BlockPos nodePos : nodeNetwork.nodes )
             {
-                if( Util.getDistance( pos, nodePos ) <= 5 )
+                if( Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
                     return nodeNetworks.get( id );
             }
         }
@@ -44,7 +46,21 @@ public class Data
 
     public static NodeNetwork findOrCreateNetwork( BlockPos pos )
     {
-        NodeNetwork nodeNetwork = findNodeNetwork( pos );
+        NodeNetwork nodeNetwork = getNearbyNodeNetwork( pos );
         return nodeNetwork == null ? createNodeNetwork( pos ) : nodeNetwork;
+    }
+
+    public static Set<BlockPos> getNearbyNodePos(int id, BlockPos pos )
+    {
+        Set<BlockPos> nearbyNodes = new HashSet<>();
+
+        NodeNetwork nodeNetwork = nodeNetworks.get( id );
+        for( BlockPos nodePos : nodeNetwork.nodes )
+        {
+            if( Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
+                nearbyNodes.add( nodePos );
+        }
+
+        return nearbyNodes;
     }
 }

@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ModBlocks
 {
-    public static final RegistryObject<Block> NODE_BLOCK = register("node_block", () -> new NodeBlock( AbstractBlock.Properties.create( Material.BUBBLE_COLUMN ) ) );
+    public static final RegistryObject<Block> MASTER_NODE_BLOCK = register("master_node_block", () -> new NodeBlock( AbstractBlock.Properties.create( Material.BAMBOO ) ) );
 
     public static void register() {}
 

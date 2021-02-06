@@ -6,7 +6,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class ModTEs
 {
-    public static final RegistryObject<TileEntityType<NodeTileEntity>> NODE = RegistryHandler.TILE_ENTITIES.register( "node", () -> TileEntityType.Builder.create( NodeTileEntity::new, ModBlocks.NODE_BLOCK.get() ).build( null ) );
+    public static final RegistryObject<TileEntityType<NodeTileEntity>> MASTER_NODE = RegistryHandler.TILE_ENTITIES.register( "master_node", () -> TileEntityType.Builder.create( NodeTileEntity::new, ModBlocks.MASTER_NODE_BLOCK.get() ).build( null ) );
 
     public static void register() {}
 }

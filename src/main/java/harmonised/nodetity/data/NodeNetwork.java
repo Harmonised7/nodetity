@@ -8,6 +8,7 @@ public class NodeNetwork
 {
     public int id;
     public HashSet<BlockPos> nodes;
+    public double nodeMaxDistance = 7;
 
     public NodeNetwork( int id, HashSet<BlockPos> nodes )
     {

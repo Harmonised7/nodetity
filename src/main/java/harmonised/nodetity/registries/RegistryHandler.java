@@ -1,11 +1,13 @@
 package harmonised.nodetity.registries;
 
 import harmonised.nodetity.tile_entities.NodeTileEntity;
+import harmonised.nodetity.tile_entities.NodeTileEntityRenderer;
 import harmonised.nodetity.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
