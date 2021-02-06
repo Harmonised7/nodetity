@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -20,6 +21,8 @@ import java.util.List;
 
 public class NodeTileEntity extends TileEntity implements ISidedInventory, ITickableTileEntity
 {
+    private static int renderBoundingBoxRange = 32;
+    private AxisAlignedBB renderBoundingBox;
     private List<ItemStack> items;
     private NodeNetwork nodeNetwork;
 
@@ -35,10 +38,17 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
     }
 
     @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return renderBoundingBox;
+    }
+
+    @Override
     public void setWorldAndPos( World world, BlockPos pos )
     {
         super.setWorldAndPos(world, pos);
         nodeNetwork = Data.findOrCreateNetwork( pos );
+        renderBoundingBox = new AxisAlignedBB( new BlockPos( pos.getX()-32, pos.getY()-32, pos.getZ()-32 ), new BlockPos( pos.getX()+32, pos.getY()+32, pos.getZ()+32 ) );
         System.out.println( "Master Node placed with id " + nodeNetwork.id );
     }
 

@@ -57,7 +57,7 @@ public class Data
         NodeNetwork nodeNetwork = nodeNetworks.get( id );
         for( BlockPos nodePos : nodeNetwork.nodes )
         {
-            if( Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
+            if( !pos.equals( nodePos ) && Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
                 nearbyNodes.add( nodePos );
         }
 

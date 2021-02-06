@@ -12,6 +12,7 @@ public class BlockPlaceHandler
         if( nodeNetwork != null )
         {
             nodeNetwork.nodes.add( event.getPos() );
+            System.out.println( "Added to Network " + nodeNetwork.id );
         }
     }
 }
