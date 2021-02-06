@@ -44,8 +44,9 @@ public class Data
         }
         HashSet<BlockPos> nodes = new HashSet<>();
         nodes.add( pos );
-        Map<ResourceLocation, NodeNetwork> globalNodeNetwork = nodeNetworks.get( id );
+        Map<ResourceLocation, NodeNetwork> globalNodeNetwork = new HashMap<>();
         globalNodeNetwork.put( resLoc, new NodeNetwork( id, nodes ) );
+        nodeNetworks.put( id, globalNodeNetwork );
         return globalNodeNetwork.get( resLoc );
     }
 
