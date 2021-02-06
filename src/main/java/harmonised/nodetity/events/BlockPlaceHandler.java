@@ -12,7 +12,7 @@ public class BlockPlaceHandler
     public static void handleBlockPlaced( BlockEvent.EntityPlaceEvent event )
     {
         World world = (World) event.getWorld();
-        NodeNetwork nodeNetwork = Data.getOrCreateNodeNetwork( world, 1, event.getPos() );
+        NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
         ResourceLocation resLoc = Util.getDimensionResLoc( world );
 
         nodeNetwork.getNodes( resLoc ).add( event.getPos() );

@@ -21,7 +21,6 @@ import java.util.Set;
 
 public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
 {
-
     public NodeTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
     {
         super(rendererDispatcherIn);
@@ -39,7 +38,7 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
         World world = tileEntityIn.getWorld();
         ResourceLocation resLoc = Util.getDimensionResLoc( world );
         BlockPos originPos = tileEntityIn.getPos();
-        NodeNetwork nodeNetwork = Data.findNearbyNodeNetwork( world, originPos );
+        NodeNetwork nodeNetwork = Data.getNodeNetwork( tileEntityIn.getNetworkId() );
         if( nodeNetwork == null )
         {
             System.out.println( "ERROR, NULL NODENETWORK" );
@@ -56,7 +55,7 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
         for( BlockPos thisNodePos : nodeNetwork.getNodes( resLoc ) )
         {
             BlockPos relThisNodePos = Util.getDifference( originPos, thisNodePos );
-            Set<BlockPos> nearbyNodes = Data.getNearbyNodePos( world, tileEntityIn.getNetworkId(), thisNodePos );
+            Set<BlockPos> nearbyNodes = nodeNetwork.getNearbyNodePos( world, thisNodePos );
             for( BlockPos nextNodePos : nearbyNodes )
             {
                 BlockPos relNextNodePos = Util.getDifference( originPos, nextNodePos );
@@ -73,7 +72,6 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
                 }
             }
         }
-
 
         for( Map.Entry<BlockPos, Set<BlockPos>> line : lines.entrySet() )
         {

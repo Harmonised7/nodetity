@@ -64,25 +64,4 @@ public class Data
             nodeNetwork = Data.createNodeNetwork( world, pos );
         return nodeNetwork;
     }
-
-    public static Set<BlockPos> getNearbyNodePos( World world, int id, BlockPos pos )
-    {
-        Set<BlockPos> nearbyNodes = new HashSet<>();
-
-        if( nodeNetworks.containsKey( id ) )
-        {
-            ResourceLocation resLoc = Util.getDimensionResLoc( world );
-            NodeNetwork nodeNetwork = nodeNetworks.get( id );
-            if( nodeNetwork != null )
-            {
-                for( BlockPos nodePos : nodeNetwork.getNodes( resLoc ) )
-                {
-                    if( !pos.equals( nodePos ) && Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
-                        nearbyNodes.add( nodePos );
-                }
-            }
-        }
-
-        return nearbyNodes;
-    }
 }

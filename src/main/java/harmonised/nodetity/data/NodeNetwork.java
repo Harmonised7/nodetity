@@ -1,7 +1,9 @@
 package harmonised.nodetity.data;
 
+import harmonised.nodetity.util.Util;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,6 +26,21 @@ public class NodeNetwork
         if( !nodes.containsKey( resLoc ) )
             nodes.put( resLoc, new HashSet<>() );
         return nodes.get( resLoc );
+    }
+
+    public Set<BlockPos> getNearbyNodePos( World world, BlockPos pos )
+    {
+        Set<BlockPos> nearbyNodes = new HashSet<>();
+
+        ResourceLocation resLoc = Util.getDimensionResLoc( world );
+
+        for( BlockPos nodePos : getNodes( resLoc ) )
+        {
+            if( !pos.equals( nodePos ) && Util.getDistance( pos, nodePos ) <= nodeMaxDistance )
+                nearbyNodes.add( nodePos );
+        }
+
+        return nearbyNodes;
     }
 
     public int getId()
