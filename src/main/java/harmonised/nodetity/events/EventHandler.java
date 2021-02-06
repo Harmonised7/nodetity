@@ -1,6 +1,7 @@
 package harmonised.nodetity.events;
 
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,5 +26,11 @@ public class EventHandler
 	public static void blockRemoved( BlockEvent.BreakEvent event )
 	{
 		BlockBreakHandler.handleBlockBreak( event );
+	}
+
+	@SubscribeEvent
+	public static void playerLoggedIn( PlayerEvent.PlayerLoggedInEvent event )
+	{
+		PlayerHandler.handlePlayerLoggedIn( event );
 	}
 }

@@ -52,14 +52,14 @@ public class Data
         return nodeNetwork == null ? createNodeNetwork( world, pos ) : nodeNetwork;
     }
 
-    public static NodeNetwork getNodeNetwork( World world, int id )
+    public static NodeNetwork getNodeNetwork( int id )
     {
         return nodeNetworks.get( id );
     }
 
     public static NodeNetwork getOrCreateNodeNetwork( World world, int id, BlockPos pos )
     {
-        NodeNetwork nodeNetwork = Data.getNodeNetwork( world, id );
+        NodeNetwork nodeNetwork = Data.getNodeNetwork( id );
         if( nodeNetwork == null )
             nodeNetwork = Data.createNodeNetwork( world, pos );
         return nodeNetwork;
