@@ -15,6 +15,9 @@ public class BlockPlaceHandler
         NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
         ResourceLocation resLoc = Util.getDimensionResLoc( world );
 
+        if( nodeNetwork == null )
+            return;
+
         nodeNetwork.getNodes( resLoc ).add( event.getPos() );
         System.out.println( "Added to Network " + nodeNetwork.getId() );
     }
