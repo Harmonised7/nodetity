@@ -34,13 +34,13 @@ public class NetworkRenderer
         World world = mc.world;
         PlayerEntity player = mc.player;
         ResourceLocation resLoc = Util.getDimensionResLoc( world );
-        Vector3d cameraCenter = Minecraft.getInstance().getRenderManager().info.getProjectedView();
+        Vector3d cameraCenter = mc.getRenderManager().info.getProjectedView();
         MatrixStack stack = event.getMatrixStack();
         stack.push();
         stack.translate( -cameraCenter.getX() + 0.5, -cameraCenter.getY() + 0.5, -cameraCenter.getZ() + 0.5 );
 //        stack.rotate(Vector3f.YP.rotationDegrees(180.0F));
         Matrix4f matrix4f = stack.getLast().getMatrix();
-        IRenderTypeBuffer buffer = mc.getRenderTypeBuffers().getBufferSource();
+        IRenderTypeBuffer.Impl buffer = mc.getRenderTypeBuffers().getBufferSource();
         IVertexBuilder builder = buffer.getBuffer( RenderType.getLines() );
 
         for( Map.Entry<Integer, NodeNetwork> entry : Data.nodeNetworks.entrySet() )
@@ -77,5 +77,7 @@ public class NetworkRenderer
         }
 
         stack.pop();
+        RenderSystem.disableDepthTest();
+        buffer.finish();
     }
 }
