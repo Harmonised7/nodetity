@@ -32,12 +32,17 @@ public class Data
 
     public static NodeNetwork createNodeNetwork( World world, BlockPos pos )
     {
-        ResourceLocation resLoc = Util.getDimensionResLoc( world );
         int id = 0;
         while( nodeNetworks.containsKey( id ) )
         {
             id++;
         }
+        return createNodeNetwork( world, pos, id );
+    }
+
+    public static NodeNetwork createNodeNetwork( World world, BlockPos pos, int id )
+    {
+        ResourceLocation resLoc = Util.getDimensionResLoc( world );
         Map<ResourceLocation, Set<BlockPos>> nodes = new HashMap<>();
         nodes.put( resLoc, new HashSet<>() );
         nodes.get( resLoc ).add( pos );
@@ -61,7 +66,7 @@ public class Data
     {
         NodeNetwork nodeNetwork = Data.getNodeNetwork( id );
         if( nodeNetwork == null )
-            nodeNetwork = Data.createNodeNetwork( world, pos );
+            nodeNetwork = Data.createNodeNetwork( world, pos, 1 );
         return nodeNetwork;
     }
 }

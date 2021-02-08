@@ -33,57 +33,57 @@ public class NodeTileEntityRenderer extends TileEntityRenderer<NodeTileEntity>
     }
 
     @Override
-    public void render(NodeTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+    public void render(NodeTileEntity tileEntityIn, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn)
     {
-        World world = tileEntityIn.getWorld();
-        ResourceLocation resLoc = Util.getDimensionResLoc( world );
-        BlockPos originPos = tileEntityIn.getPos();
-        NodeNetwork nodeNetwork = Data.getNodeNetwork( tileEntityIn.getNetworkId() );
-        if( nodeNetwork == null )
-        {
-            System.out.println( "ERROR, NULL NODENETWORK" );
-            return;
-        }
-//        matrixStackIn.scale(0.5F, 0.5F, 0.5F);
-        matrixStackIn.push();
-        matrixStackIn.translate( 0.5, 0.5, 0.5 );
-//        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F));
-        IVertexBuilder builder = bufferIn.getBuffer( RenderType.getLines() );
-        Matrix4f matrix4f1 = matrixStackIn.getLast().getMatrix();
-        Map<BlockPos, Set<BlockPos>> lines = new HashMap<>();
-
-        for( BlockPos thisNodePos : nodeNetwork.getNodes( resLoc ) )
-        {
-            BlockPos relThisNodePos = Util.getDifference( originPos, thisNodePos );
-            Set<BlockPos> nearbyNodes = nodeNetwork.getNearbyNodePos( world, thisNodePos );
-            for( BlockPos nextNodePos : nearbyNodes )
-            {
-                BlockPos relNextNodePos = Util.getDifference( originPos, nextNodePos );
-                {
-                    Set<BlockPos> posSet = lines.get( relThisNodePos );
-                    if( posSet == null )
-                    {
-                        lines.put( relThisNodePos, new HashSet<>() );
-                        posSet = lines.get( relThisNodePos );
-                    }
-                    if( !( lines.containsKey( relThisNodePos ) && lines.get( relThisNodePos ).contains( relNextNodePos ) ||
-                           lines.containsKey( relNextNodePos ) && lines.get( relNextNodePos ).contains( relThisNodePos ) ) )
-                    posSet.add( relNextNodePos );
-                }
-            }
-        }
-
-        for( Map.Entry<BlockPos, Set<BlockPos>> line : lines.entrySet() )
-        {
-            for( BlockPos endPos : line.getValue() )
-            {
-                matrixStackIn.push();
-                builder.pos( matrix4f1, line.getKey().getX(), line.getKey().getY(), line.getKey().getZ() ).color(255, 0, 255, 200).endVertex();
-                builder.pos( matrix4f1, endPos.getX(), endPos.getY(), endPos.getZ() ).color(255, 0, 255, 200).endVertex();
-                matrixStackIn.pop();
-            }
-        }
-
-        matrixStackIn.pop();
+//        World world = tileEntityIn.getWorld();
+//        ResourceLocation resLoc = Util.getDimensionResLoc( world );
+//        BlockPos originPos = tileEntityIn.getPos();
+//        NodeNetwork nodeNetwork = Data.getNodeNetwork( tileEntityIn.getNetworkId() );
+//        if( nodeNetwork == null )
+//        {
+//            System.out.println( "ERROR, NULL NODENETWORK" );
+//            return;
+//        }
+////        stack.scale(0.5F, 0.5F, 0.5F);
+//        stack.push();
+//        stack.translate( 0.5, 0.5, 0.5 );
+////        stack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+//        IVertexBuilder builder = buffer.getBuffer( RenderType.getLines() );
+//        Matrix4f matrix4f = stack.getLast().getMatrix();
+//        Map<BlockPos, Set<BlockPos>> lines = new HashMap<>();
+//
+//        for( BlockPos thisNodePos : nodeNetwork.getNodes( resLoc ) )
+//        {
+//            BlockPos relThisNodePos = Util.getDifference( originPos, thisNodePos );
+//            Set<BlockPos> nearbyNodes = nodeNetwork.getNearbyNodePos( world, thisNodePos );
+//            for( BlockPos nextNodePos : nearbyNodes )
+//            {
+//                BlockPos relNextNodePos = Util.getDifference( originPos, nextNodePos );
+//                {
+//                    Set<BlockPos> posSet = lines.get( relThisNodePos );
+//                    if( posSet == null )
+//                    {
+//                        lines.put( relThisNodePos, new HashSet<>() );
+//                        posSet = lines.get( relThisNodePos );
+//                    }
+//                    if( !( lines.containsKey( relThisNodePos ) && lines.get( relThisNodePos ).contains( relNextNodePos ) ||
+//                           lines.containsKey( relNextNodePos ) && lines.get( relNextNodePos ).contains( relThisNodePos ) ) )
+//                    posSet.add( relNextNodePos );
+//                }
+//            }
+//        }
+//
+//        for( Map.Entry<BlockPos, Set<BlockPos>> line : lines.entrySet() )
+//        {
+//            for( BlockPos endPos : line.getValue() )
+//            {
+//                stack.push();
+//                builder.pos( matrix4f, line.getKey().getX(), line.getKey().getY(), line.getKey().getZ() ).color(255, 0, 255, 200).endVertex();
+//                builder.pos( matrix4f, endPos.getX(), endPos.getY(), endPos.getZ() ).color(255, 0, 255, 200).endVertex();
+//                stack.pop();
+//            }
+//        }
+//
+//        stack.pop();
     }
 }

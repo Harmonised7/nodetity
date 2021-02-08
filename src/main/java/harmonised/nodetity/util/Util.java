@@ -2,6 +2,7 @@ package harmonised.nodetity.util;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class Util
@@ -17,6 +18,16 @@ public class Util
     }
 
     public static BlockPos getDifference( BlockPos pos1, BlockPos pos2 )
+    {
+        return new BlockPos( pos2.getX() - pos1.getX(), pos2.getY() - pos1.getY(), pos2.getZ() - pos1.getZ() );
+    }
+
+    public static BlockPos getDifference( Vector3d pos1, BlockPos pos2 )
+    {
+        return new BlockPos( pos2.getX() - pos1.getX(), pos2.getY() - pos1.getY(), pos2.getZ() - pos1.getZ() );
+    }
+
+    public static BlockPos getDifference( BlockPos pos1, Vector3d pos2 )
     {
         return new BlockPos( pos2.getX() - pos1.getX(), pos2.getY() - pos1.getY(), pos2.getZ() - pos1.getZ() );
     }

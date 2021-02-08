@@ -1,6 +1,7 @@
 package harmonised.nodetity;
 
 import harmonised.nodetity.client.ClientHandler;
+import harmonised.nodetity.client.NetworkRenderer;
 import harmonised.nodetity.nodetity_saved_data.NodetitySavedData;
 import harmonised.nodetity.registries.RegistryHandler;
 import harmonised.nodetity.util.Reference;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -34,6 +36,10 @@ public class NodetityMod
         MinecraftForge.EVENT_BUS.addListener( this::serverAboutToStart );
         MinecraftForge.EVENT_BUS.addListener( this::registerCommands );
         MinecraftForge.EVENT_BUS.addListener( this::serverStart );
+
+//        if( FMLEnvironment.dist.isClient() )
+//        {
+//        }
 
         RegistryHandler.init();
 //        DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> Requirements::init );
