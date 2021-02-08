@@ -33,12 +33,11 @@ public class NetworkRenderer
         Minecraft mc = Minecraft.getInstance();
         World world = mc.world;
         PlayerEntity player = mc.player;
-        Vector3d playerPos = player.getEyePosition( 0 );
-//        BlockPos playerPos = player.getPosition().up();
         ResourceLocation resLoc = Util.getDimensionResLoc( world );
+        Vector3d cameraCenter = Minecraft.getInstance().getRenderManager().info.getProjectedView();
         MatrixStack stack = event.getMatrixStack();
         stack.push();
-        stack.translate( -playerPos.getX() + 0.5, -playerPos.getY() + 0.5, -playerPos.getZ() + 0.5 );
+        stack.translate( -cameraCenter.getX() + 0.5, -cameraCenter.getY() + 0.5, -cameraCenter.getZ() + 0.5 );
 //        stack.rotate(Vector3f.YP.rotationDegrees(180.0F));
         Matrix4f matrix4f = stack.getLast().getMatrix();
         IRenderTypeBuffer buffer = mc.getRenderTypeBuffers().getBufferSource();
