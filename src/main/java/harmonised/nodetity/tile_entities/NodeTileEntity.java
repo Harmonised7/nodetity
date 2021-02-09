@@ -21,11 +21,11 @@ import java.util.List;
 
 public class NodeTileEntity extends TileEntity implements ISidedInventory, ITickableTileEntity
 {
-    final private static int renderBoundingBoxRange = 32;
+//    final private static int renderBoundingBoxRange = 32;
     final private List<ItemStack> items;
     private NodeNetwork nodeNetwork;
 
-    private AxisAlignedBB renderBoundingBox;
+//    private AxisAlignedBB renderBoundingBox;
 
     public NodeTileEntity()
     {
@@ -38,19 +38,17 @@ public class NodeTileEntity extends TileEntity implements ISidedInventory, ITick
         return nodeNetwork.getId();
     }
 
-    @Override
-    public AxisAlignedBB getRenderBoundingBox()
-    {
-        return renderBoundingBox;
-    }
+//    @Override
+//    public AxisAlignedBB getRenderBoundingBox()
+//    {
+//        return renderBoundingBox;
+//    }
 
     @Override
     public void setWorldAndPos( World world, BlockPos pos )
     {
         super.setWorldAndPos( world, pos );
-        nodeNetwork = Data.getOrCreateNodeNetwork( world, 1, pos );
-        renderBoundingBox = new AxisAlignedBB( new BlockPos( pos.getX()-32, pos.getY()-32, pos.getZ()-32 ), new BlockPos( pos.getX()+32, pos.getY()+32, pos.getZ()+32 ) );
-        System.out.println( "Master Node placed with id " + nodeNetwork.getId() );
+//        renderBoundingBox = new AxisAlignedBB( new BlockPos( pos.getX()-32, pos.getY()-32, pos.getZ()-32 ), new BlockPos( pos.getX()+32, pos.getY()+32, pos.getZ()+32 ) );
     }
 
     @Override

@@ -47,7 +47,8 @@ public class NetworkRenderer
         {
             NodeNetwork nodeNetwork = entry.getValue();
             Map<BlockPos, Set<BlockPos>> lines = new HashMap<>();
-            for( BlockPos thisNodePos : nodeNetwork.getNodes( resLoc ) )
+            Set<BlockPos> nodes = new HashSet<>( nodeNetwork.getNodes( resLoc ) );
+            for( BlockPos thisNodePos : nodes )
             {
                 Set<BlockPos> nearbyNodes = nodeNetwork.getNearbyNodePos( world, thisNodePos );
                 for( BlockPos nextNodePos : nearbyNodes )

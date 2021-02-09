@@ -46,7 +46,7 @@ public class Data
         Map<ResourceLocation, Set<BlockPos>> nodes = new HashMap<>();
         nodes.put( resLoc, new HashSet<>() );
         nodes.get( resLoc ).add( pos );
-        NodeNetwork nodeNetwork = new NodeNetwork( id, nodes );
+        NodeNetwork nodeNetwork = new NodeNetwork( id, nodes, world, pos );
         nodeNetworks.put( id, nodeNetwork );
         return nodeNetworks.get( id );
     }
@@ -68,5 +68,10 @@ public class Data
         if( nodeNetwork == null )
             nodeNetwork = Data.createNodeNetwork( world, pos, 1 );
         return nodeNetwork;
+    }
+
+    public static void removeNodeNetwork( int id )
+    {
+        nodeNetworks.remove( id );
     }
 }

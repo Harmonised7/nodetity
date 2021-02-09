@@ -13,12 +13,16 @@ public class NodeNetwork
 {
     private final int id;
     private final Map<ResourceLocation, Set<BlockPos>> nodes;
+    private World masterWorld;
+    private BlockPos masterPos;
     public double nodeMaxDistance = 7;
 
-    public NodeNetwork( int id, Map<ResourceLocation, Set<BlockPos>> nodes )
+    public NodeNetwork( int id, Map<ResourceLocation, Set<BlockPos>> nodes, World masterWorld, BlockPos masterPos )
     {
         this.id = id;
         this.nodes = nodes;
+        this.masterWorld = masterWorld;
+        this.masterPos = masterPos;
     }
 
     public Set<BlockPos> getNodes( ResourceLocation resLoc )
@@ -53,5 +57,21 @@ public class NodeNetwork
     public int getId()
     {
         return id;
+    }
+
+    public World getMasterWorld()
+    {
+        return masterWorld;
+    }
+
+    public BlockPos getMasterPos()
+    {
+        return masterPos;
+    }
+
+    public void setMasterWorldAndPos( World world, BlockPos pos )
+    {
+        this.masterWorld = world;
+        this.masterPos = pos;
     }
 }
