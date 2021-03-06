@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import harmonised.nodetity.data.Data;
 import harmonised.nodetity.data.NodeNetwork;
+import harmonised.nodetity.data.NodeState;
 import harmonised.nodetity.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -47,21 +48,31 @@ public class NetworkRenderer
         {
             NodeNetwork nodeNetwork = entry.getValue();
             Map<BlockPos, Set<BlockPos>> lines = new HashMap<>();
-            Set<BlockPos> nodes = new HashSet<>( nodeNetwork.getNodes( resLoc ) );
-            for( BlockPos thisNodePos : nodes )
+            Set<NodeState> nodeStates = new HashSet<>( nodeNetwork.getNodes( resLoc ) );
+            for( NodeState thisNodeState : nodeStates )
             {
-                Set<BlockPos> nearbyNodes = nodeNetwork.getNearbyNodePos( world, thisNodePos );
-                for( BlockPos nextNodePos : nearbyNodes )
+                BlockPos thisNodePos = thisNodeState.getPos();
+                Set<NodeState> nearbyNodes = thisNodeState.getNeighbors();
+                try
                 {
-                Set<BlockPos> posSet = lines.get( thisNodePos );
-                if( posSet == null )
-                {
-                    lines.put( thisNodePos, new HashSet<>() );
-                    posSet = lines.get( thisNodePos );
+                    for( NodeState nextNodeState : nearbyNodes )
+                    {
+                        BlockPos nextNodePos = nextNodeState.getPos();
+                        Set<BlockPos> posSet = lines.get( thisNodePos );
+                        if( posSet == null )
+                        {
+                            lines.put( thisNodePos, new HashSet<>() );
+                            posSet = lines.get( thisNodePos );
+                        }
+                        if( !( lines.containsKey( thisNodePos ) && lines.get( thisNodePos ).contains( nextNodePos ) ||
+                                lines.containsKey( nextNodePos ) && lines.get( nextNodePos ).contains( thisNodePos ) ) )
+                            posSet.add( nextNodePos );
+                    }
                 }
-                if( !( lines.containsKey( thisNodePos ) && lines.get( thisNodePos ).contains( nextNodePos ) ||
-                       lines.containsKey( nextNodePos ) && lines.get( nextNodePos ).contains( thisNodePos ) ) )
-                    posSet.add( nextNodePos );
+                catch( Exception e )
+                {
+                    System.out.println( "For some reason, this crashes..?" );
+                    e.printStackTrace();
                 }
             }
 

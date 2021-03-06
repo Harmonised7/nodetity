@@ -95,19 +95,20 @@ public class NodeBlock extends Block
     @Override
     public BlockState getStateForPlacement( BlockItemUseContext context )
     {
-        NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
-        if( !context.getWorld().isRemote() )
-        {
-            System.out.println( "Server network is null: " + ( nodeNetwork == null ) );
-        }
-        if( nodeNetwork == null )
-            return getDefaultState();
-        else
-        {
-            World masterWorld = nodeNetwork.getMasterWorld();
-            if( masterWorld == null || !masterWorld.getBlockState( nodeNetwork.getMasterPos() ).getBlock().equals( ModBlocks.MASTER_NODE_BLOCK.get() ) )
-                return getDefaultState();
-        }
-        return null;
+//        NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
+//        if( !context.getWorld().isRemote() )
+//        {
+//            System.out.println( "Server network is null: " + ( nodeNetwork == null ) );
+//        }
+//        if( nodeNetwork == null )
+//            return getDefaultState();
+//        else
+//        {
+//            World masterWorld = nodeNetwork.getMasterWorld();
+//            if( masterWorld == null || !masterWorld.getBlockState( nodeNetwork.getMasterPos() ).getBlock().equals( ModBlocks.MASTER_NODE_BLOCK.get() ) )
+//                return getDefaultState();
+//        }
+//        return null;
+        return super.getStateForPlacement( context );
     }
 }

@@ -107,7 +107,7 @@ repositories
 
 dependencies
         {
-            minecraft 'net.minecraftforge:forge:1.16.4-35.1.7'
+            minecraft 'net.minecraftforge:forge:1.16.4-35.1.37'
             implementation 'com.google.code.gson:gson:2.8.6'
 
             compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.66:api")
@@ -115,7 +115,7 @@ dependencies
 //            runtimeOnly fg.deobf("curse.maven:jei:3039766")
 //            runtimeOnly fg.deobf("curse.maven:ores-and-metals:2967502")
 //            runtimeOnly fg.deobf("curse.maven:curio-of-undying:2994182")
-//            runtimeOnly fg.deobf("curse.maven:worldedit:2873556")
+//            runtimeOnly fg.deobf("curse.maven:worldedit:3209370")
             runtimeOnly fg.deobf("curse.maven:explosiont:3084219")
 
 //            runtimeOnly fg.deobf("curse.maven:azuredoom-doom-mod:3009638")

@@ -20,9 +20,9 @@ public class Data
         for( int id : nodeNetworks.keySet() )
         {
             NodeNetwork nodeNetwork = nodeNetworks.get( id );
-           for( BlockPos nodePos : nodeNetwork.getNodes( resLoc ) )
+           for( NodeState nodeState : nodeNetwork.getNodes( resLoc ) )
            {
-               if( Util.getDistance( pos, nodePos ) <= nodeNetwork.nodeMaxDistance )
+               if( Util.getDistance( pos, nodeState.getPos() ) <= nodeNetwork.nodeMaxDistance )
                    return nodeNetwork;
            }
         }
@@ -42,10 +42,8 @@ public class Data
 
     public static NodeNetwork createNodeNetwork( World world, BlockPos pos, int id )
     {
-        ResourceLocation resLoc = Util.getDimensionResLoc( world );
-        Map<ResourceLocation, Set<BlockPos>> nodes = new HashMap<>();
-        nodes.put( resLoc, new HashSet<>() );
-        nodes.get( resLoc ).add( pos );
+//        ResourceLocation resLoc = Util.getDimensionResLoc( world );
+        Map<ResourceLocation, Set<NodeState>> nodes = new HashMap<>();
         NodeNetwork nodeNetwork = new NodeNetwork( id, nodes, world, pos );
         nodeNetworks.put( id, nodeNetwork );
         return nodeNetworks.get( id );
