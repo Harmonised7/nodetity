@@ -1,17 +1,27 @@
 package harmonised.nodetity.events;
 
+import harmonised.nodetity.data.Data;
+import harmonised.nodetity.data.NodeNetwork;
+import harmonised.nodetity.data.NodeState;
+import harmonised.nodetity.util.Util;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.UUID;
 
 public class PlayerHandler
 {
     private static final UUID reachModifierID  = UUID.fromString("fdf3ba66-bdd9-4e06-b1b4-c8c581572626");
+    public static NodeState firstState, lastState;
 
     public static void handlePlayerLoggedIn( PlayerEvent.PlayerLoggedInEvent event )
     {
@@ -26,6 +36,28 @@ public class PlayerHandler
                 AttributeModifier reachModifier = new AttributeModifier( reachModifierID, "Reach bonus thanks to Build Level", reach, AttributeModifier.Operation.ADDITION );
                 reachAttribute.removeModifier( reachModifierID );
                 reachAttribute.applyPersistentModifier( reachModifier );
+            }
+        }
+    }
+
+    public static void handlePlayerInteraction( PlayerInteractEvent event )
+    {
+        if( event instanceof PlayerInteractEvent.RightClickBlock )
+        {
+            PlayerEntity player = event.getPlayer();
+            World world = player.getEntityWorld();
+            ResourceLocation dimResLoc = Util.getDimensionResLoc( world );
+            BlockPos pos = event.getPos();
+            NodeNetwork network = Data.getNodeNetwork( 1 );
+            if( event.getHand().equals( Hand.MAIN_HAND ) && player.getHeldItemMainhand().getItem().equals( Items.ARROW ) )
+            {
+                firstState = network.getNode( dimResLoc, pos );
+                System.out.println( "First NodeState set" );
+            }
+            else if( event.getHand().equals( Hand.OFF_HAND ) && player.getHeldItemOffhand().getItem().equals( Items.ARROW ) )
+            {
+                lastState = network.getNode( dimResLoc, pos );
+                System.out.println( "Last NodeState set" );
             }
         }
     }

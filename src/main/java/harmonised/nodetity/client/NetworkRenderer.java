@@ -52,7 +52,7 @@ public class NetworkRenderer
             for( NodeState thisNodeState : nodeStates )
             {
                 BlockPos thisNodePos = thisNodeState.getPos();
-                Set<NodeState> nearbyNodes = thisNodeState.getNeighbors();
+                Set<NodeState> nearbyNodes = thisNodeState.getNeighbors().keySet();
                 try
                 {
                     for( NodeState nextNodeState : nearbyNodes )

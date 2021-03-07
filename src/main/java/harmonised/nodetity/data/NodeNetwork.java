@@ -5,6 +5,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -34,12 +35,12 @@ public class NodeNetwork
 
     public void addNode( ResourceLocation dimResLoc, NodeState nodeState )
     {
-        nodes.get( dimResLoc ).add( nodeState );
+        getNodes( dimResLoc ).add( nodeState );
     }
 
     public void removeNode( ResourceLocation dimResLoc, NodeState nodeState )
     {
-        nodes.get( dimResLoc ).remove( nodeState );
+        getNodes( dimResLoc ).remove( nodeState );
         for( NodeState neighborNodeState : getNodes( dimResLoc ) )
         {
             neighborNodeState.getNeighbors().remove( nodeState );
@@ -57,33 +58,15 @@ public class NodeNetwork
         return null;
     }
 
-//    public Set<BlockPos> getNearbyNodePos( World world, BlockPos pos )
-//    {
-//        ResourceLocation resLoc = Util.getDimensionResLoc( world );
-//
-//        Set<BlockPos> nearbyNodes = new HashSet<>();
-//        Set<BlockPos> nodes = getNodes( resLoc );
-//        Set<BlockPos> falseNodes = new HashSet<>();
-//        for( BlockPos nodePos : nodes )
-//        {
-//            if( world.getBlockState( nodePos ).isAir() )
-//                falseNodes.add( nodePos );
-//            else if( !pos.equals( nodePos ) && Util.getDistance( pos, nodePos ) <= nodeMaxDistance )
-//                nearbyNodes.add( nodePos );
-//        }
-//        for( BlockPos falseNodePos : falseNodes )
-//        {
-//            nodes.remove( falseNodePos );
-//        }
-//
-//        return nearbyNodes;
-//    }
-
     public void reconstructNetwork( ResourceLocation dimResLoc )
     {
         for( NodeState nodeState : nodes.get( dimResLoc ) )
         {
             nodeState.initNeighbors();
+        }
+        for( NodeState nodeState : nodes.get( dimResLoc ) )
+        {
+            nodeState.clearShortestPaths();
         }
     }
 
