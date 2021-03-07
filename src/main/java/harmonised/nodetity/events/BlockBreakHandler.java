@@ -11,6 +11,7 @@ import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BlockBreakHandler
 {
@@ -30,16 +31,49 @@ public class BlockBreakHandler
             }
         }
 
-        ArrayList<Double> array1 = new ArrayList<>();
-        array1.add( 3D );
-        array1.add( 6D );
-//        array1.add( 9D );
-//        array1.add( 12D );
-//        array1.add( 15D );
-        int lIndex = array1.indexOf( 3D );
-        int uIndex = array1.indexOf( 6D )+1;
-        System.out.println( lIndex + " " + uIndex );
-        System.out.println( array1 );
-        System.out.println( Lists.reverse( array1.subList( lIndex, uIndex ) ) );
+//        try
+//        {
+//            ArrayList<Integer> array1 = new ArrayList<>();
+//            array1.add( 1 );
+//            array1.add( 2 );
+//            array1.add( 3 );
+//            array1.add( 4 );
+//            array1.add( 5 );
+//            Map<Integer, Map<Integer, List<Integer>>> paths;
+//
+//            int size = array1.size();
+//            for( int lIndex = 0; lIndex < size; lIndex++ )
+//            {
+//                for( int uIndex = 0; uIndex < size; uIndex++ )
+//                {
+//                    if( lIndex != uIndex )
+//                    {
+//                        int fItem, lItem;
+//                        if( lIndex > uIndex )
+//                        {
+//                            fItem = array1.get( uIndex );
+//                            lItem = array1.get( lIndex );
+//                            System.out.println( "a" );
+//                            System.out.println( "f: " + lIndex + ", l: " + uIndex );
+////                            System.out.println( array1.subList( uIndex, lIndex+1 ) );
+//                            System.out.println( Lists.reverse( array1.subList( uIndex, lIndex+1 ) ) );
+//                        }
+//                        else
+//                        {
+//                            fItem = array1.get( lIndex );
+//                            lItem = array1.get( uIndex );
+//                            System.out.println( "b" );
+//                            System.out.println( "f: " + lIndex + ", l: " + uIndex );
+//                            System.out.println( array1.subList( lIndex, uIndex+1 ) );
+////                            System.out.println( Lists.reverse( array1.subList( lIndex, uIndex+1 ) ) );
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        catch( Exception e )
+//        {
+//            System.out.println( e );
+//        }
     }
 }

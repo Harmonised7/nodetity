@@ -7,6 +7,7 @@ import harmonised.nodetity.util.Util;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -16,6 +17,7 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerHandler
@@ -51,19 +53,32 @@ public class PlayerHandler
             NodeNetwork network = Data.getNodeNetwork( 1 );
             if( network == null )
                 return;
-            if( event.getHand().equals( Hand.MAIN_HAND ) && player.getHeldItemMainhand().getItem().equals( Items.ARROW ) )
+            Item mainItem = player.getHeldItemMainhand().getItem();
+            Item offItem = player.getHeldItemOffhand().getItem();
+            if( event.getHand().equals( Hand.MAIN_HAND ) )
             {
-                firstState = network.getNode( dimResLoc, pos );
-                System.out.println( "First NodeState set" );
+                if( mainItem.equals( Items.ARROW ) )
+                {
+                    firstState = network.getNode( dimResLoc, pos );
+                    System.out.println( "First NodeState set" );
+                }
+                else if( mainItem.equals( Items.NETHER_STAR ) && !world.isRemote() )
+                {
+                    System.out.println( "Star" );
+                    Set<NodeState> nodes = network.getNodes( dimResLoc );
+                    for( NodeState node : nodes )
+                    {
+                        if( node.getShortestPaths().size() > 0 )
+                        {
+                            System.out.println( "Shortest Paths Found" );
+                        }
+                    }
+                }
             }
-            else if( event.getHand().equals( Hand.OFF_HAND ) && player.getHeldItemOffhand().getItem().equals( Items.ARROW ) )
+            else if( event.getHand().equals( Hand.OFF_HAND ) && offItem.equals( Items.ARROW ) )
             {
                 lastState = network.getNode( dimResLoc, pos );
                 System.out.println( "Last NodeState set" );
-            }
-            if( firstState != null && lastState != null )
-            {
-                firstState.createShortestPathTo( lastState );
             }
         }
     }

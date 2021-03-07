@@ -31,4 +31,14 @@ public class Util
     {
         return new BlockPos( pos2.getX() - pos1.getX(), pos2.getY() - pos1.getY(), pos2.getZ() - pos1.getZ() );
     }
+
+    public static int getDifference( int a, int b )
+    {
+        return getAbsolute( a-b );
+    }
+
+    public static int getAbsolute( int a )
+    {
+        return a < 0 ? -a : a;
+    }
 }

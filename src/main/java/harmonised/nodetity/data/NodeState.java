@@ -82,20 +82,86 @@ public class NodeState
             List<List<NodeState>> allDestPathsKeys = new ArrayList<>( allDestPaths.keySet() );
             allDestPathsKeys.sort( Comparator.comparingDouble( allDestPaths::get ) );
             List<NodeState> shortestPath = allDestPathsKeys.get(0);
-            shortestPaths.put( destNode, shortestPath );
+//            shortestPaths.put( destNode, shortestPath );
+
             int shortestPathSize = shortestPath.size();
+            for( int lIndex = 0; lIndex < shortestPathSize; lIndex++ )
+            {
+                for( int uIndex = 0; uIndex < shortestPathSize; uIndex++ )
+                {
+                    if( lIndex != uIndex )
+                    {
+                        NodeState fItem, lItem;
+                        if( lIndex > uIndex )
+                        {
+                            fItem = shortestPath.get( uIndex );
+                            lItem = shortestPath.get( lIndex );
+                            fItem.shortestPaths.put( lItem, Lists.reverse( shortestPath.subList( uIndex, lIndex+1 ) ) );
+//                            System.out.println( "a" );
+//                            System.out.println( "f: " + uIndex + ", l: " + lIndex );
+//                            System.out.println( shortestPath.subList( uIndex, lIndex+1 ) );
+                        }
+                        else
+                        {
+                            fItem = shortestPath.get( lIndex );
+                            lItem = shortestPath.get( uIndex );
+                            fItem.shortestPaths.put( lItem, shortestPath.subList( lIndex, uIndex+1 ) );
+//                            System.out.println( "b" );
+//                            System.out.println( "f: " + lIndex + ", l: " + uIndex );
+                        }
+//                        System.out.println( "Linko Startu!!" );
+                    }
+                }
+            }
+
+//            for( int lIndex = 0; lIndex < shortestPathSize; lIndex++ )
+//            {
+//                for( int uIndex = 0; uIndex < shortestPathSize; uIndex++ )
+//                {
+//                    boolean reverse = false;
+//                    NodeState node1 = shortestPath.get(lIndex);
+//                    NodeState node2 = shortestPath.get(uIndex);
+//                    if( node1.shortestPaths.containsKey( node2 ) )
+//                        continue;
+//                    List<NodeState> newPath;
+////                    System.out.println( lIndex + " " + uIndex );
+////                    System.out.println( "size: " + shortestPath.size() );
+//                    if( lIndex > uIndex )
+//                    {
+//                        newPath = Lists.reverse( shortestPath.subList( uIndex, lIndex+1 ) );
+//                        reverse = true;
+//                    }
+//                    else
+//                        newPath = shortestPath.subList( lIndex, uIndex+1 );
+//                    if( newPath.size() < 2 )
+//                        continue;
+////                    System.out.println( "new size: " + newPath.size() );
+////                    System.out.println( "linking new path" );
+//                    if( reverse )
+//                        setShortestPath( node2, node1, newPath );
+//                    else
+//                        setShortestPath( node1, node2, newPath );
+//                }
+//            }
         }
     }
 
-    //Debug Only
+    @Deprecated
     public Map<NodeState, Map<List<NodeState>, Double>> getAllPaths()
     {
         return allPaths;
     }
 
+    @Deprecated
     public Map<NodeState, List<NodeState>> getShortestPaths()
     {
         return shortestPaths;
+    }
+
+    public List<NodeState> getShortestPath( NodeState destState )
+    {
+        createShortestPathTo( destState );
+        return shortestPaths.get( destState );
     }
 
     public static void setShortestPath( NodeState originNode, NodeState destNode, List<NodeState> path )
@@ -151,5 +217,11 @@ public class NodeState
     public Map<NodeState, Double> getNeighbors()
     {
         return neighbors;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "[" + pos.getX() + ":" + pos.getY() + ":" + pos.getZ() + "]";
     }
 }

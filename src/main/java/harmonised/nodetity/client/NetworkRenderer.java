@@ -47,16 +47,11 @@ public class NetworkRenderer
             Map<BlockPos, Set<BlockPos>> lines = getLinesFromNodeStates( nodeStates, true );
             //DEBUG
             Map<BlockPos, Set<BlockPos>> bestPathLines = null;
-            for( NodeState thisNodeState : nodeStates )
+            if( PlayerHandler.firstState != null && PlayerHandler.lastState != null )
             {
-                Map<NodeState, List<NodeState>> allShortestPaths = thisNodeState.getShortestPaths();
-                if( allShortestPaths.size() > 0 )
-                {
-                    List<NodeState> shortestPath = allShortestPaths.get( PlayerHandler.lastState );
-                    if( shortestPath == null )
-                        continue;
+                List<NodeState> shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
+                if( shortestPath != null )
                     bestPathLines = getLinesFromNodeStates( new HashSet<>( shortestPath ), false );
-                }
             }
             //END OF DEBUG
 
