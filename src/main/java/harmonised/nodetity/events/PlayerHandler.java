@@ -49,6 +49,8 @@ public class PlayerHandler
             ResourceLocation dimResLoc = Util.getDimensionResLoc( world );
             BlockPos pos = event.getPos();
             NodeNetwork network = Data.getNodeNetwork( 1 );
+            if( network == null )
+                return;
             if( event.getHand().equals( Hand.MAIN_HAND ) && player.getHeldItemMainhand().getItem().equals( Items.ARROW ) )
             {
                 firstState = network.getNode( dimResLoc, pos );
@@ -58,6 +60,10 @@ public class PlayerHandler
             {
                 lastState = network.getNode( dimResLoc, pos );
                 System.out.println( "Last NodeState set" );
+            }
+            if( firstState != null && lastState != null )
+            {
+                firstState.createShortestPathTo( lastState );
             }
         }
     }

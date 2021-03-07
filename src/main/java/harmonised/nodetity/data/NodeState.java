@@ -1,5 +1,6 @@
 package harmonised.nodetity.data;
 
+import com.google.common.collect.Lists;
 import harmonised.nodetity.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
@@ -17,8 +18,9 @@ public class NodeState
     private final ResourceLocation dim;
 
     private final Map<NodeState, Double> neighbors = new HashMap<>();
-    private Map<NodeState, Map<List<NodeState>, Double>> sPaths = new HashMap<>();
-    private static double shortestLength;
+    private Map<NodeState, Map<List<NodeState>, Double>> allPaths = new HashMap<>();
+    private Map<NodeState, List<NodeState>> shortestPaths = new HashMap<>();
+    private double shortestLength;
 
     public NodeState( NodeNetwork network, World world, Block block, BlockPos pos )
     {
@@ -52,9 +54,10 @@ public class NodeState
         }
     }
 
-    public void clearShortestPaths()
+    public void clearAllPaths()
     {
-        sPaths.clear();
+        allPaths.clear();
+        shortestPaths.clear();
     }
 
 //    public NodeState getNextDestinationNode( NodeState destNode )
@@ -65,12 +68,39 @@ public class NodeState
 //        return sPaths.get( destNode );
 //    }
 
-    public void createShortestPath( NodeState currNode, NodeState destNode )
+    public void createShortestPathTo( NodeState destNode )
     {
+        if( shortestPaths.containsKey( destNode ) )
+            return;
         shortestLength = Integer.MAX_VALUE;
         List<NodeState> currPath = new ArrayList<>();
-        currPath.add( currNode );
+        currPath.add( this );
         recursiveFindPath( currPath, destNode, 0, new HashSet<>() );
+        if( allPaths.containsKey( destNode ) )
+        {
+            Map<List<NodeState>, Double> allDestPaths = allPaths.get( destNode );
+            List<List<NodeState>> allDestPathsKeys = new ArrayList<>( allDestPaths.keySet() );
+            allDestPathsKeys.sort( Comparator.comparingDouble( allDestPaths::get ) );
+            List<NodeState> shortestPath = allDestPathsKeys.get(0);
+            shortestPaths.put( destNode, shortestPath );
+            int shortestPathSize = shortestPath.size();
+        }
+    }
+
+    //Debug Only
+    public Map<NodeState, Map<List<NodeState>, Double>> getAllPaths()
+    {
+        return allPaths;
+    }
+
+    public Map<NodeState, List<NodeState>> getShortestPaths()
+    {
+        return shortestPaths;
+    }
+
+    public static void setShortestPath( NodeState originNode, NodeState destNode, List<NodeState> path )
+    {
+        originNode.shortestPaths.put( destNode, path );
     }
 
     private void recursiveFindPath( List<NodeState> currPath, NodeState destNode, double currWeight, Set<NodeState> doneNodes )
@@ -78,12 +108,15 @@ public class NodeState
         NodeState thisNode = currPath.get( currPath.size()-1 );
         if( thisNode.getPos().equals( destNode.getPos() ) )
         {
-            System.out.println( "Found!!!" );
-            if( !sPaths.containsKey( thisNode ) )
-                sPaths.put( thisNode, new HashMap<>() );
-            sPaths.get( thisNode ).put( currPath, currWeight );
+            if( currPath.size() == 1 )
+                return;
             if( currWeight < shortestLength )
+            {
                 shortestLength = currWeight;
+                if( !allPaths.containsKey( thisNode ) )
+                    allPaths.put( thisNode, new HashMap<>() );
+                allPaths.get( thisNode ).put( currPath, currWeight );
+            }
         }
         else
         {
@@ -102,8 +135,7 @@ public class NodeState
                 }
             }
         }
-
-        System.out.println( "Dead End" );
+//        System.out.println( "Dead End" );
     }
 
     public World getWorld()

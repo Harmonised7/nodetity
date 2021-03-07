@@ -35,6 +35,7 @@ public class EventHandler
 		PlayerHandler.handlePlayerLoggedIn( event );
 	}
 
+	@SubscribeEvent
 	public static void playerInteraction( PlayerInteractEvent event )
 	{
 		PlayerHandler.handlePlayerInteraction( event );

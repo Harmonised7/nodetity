@@ -1,11 +1,9 @@
 package harmonised.nodetity.data;
 
-import harmonised.nodetity.util.Util;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +64,7 @@ public class NodeNetwork
         }
         for( NodeState nodeState : nodes.get( dimResLoc ) )
         {
-            nodeState.clearShortestPaths();
+            nodeState.clearAllPaths();
         }
     }
 
