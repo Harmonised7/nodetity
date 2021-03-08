@@ -18,9 +18,7 @@ public class NodeState
     private final ResourceLocation dim;
 
     private final Map<NodeState, Double> neighbors = new HashMap<>();
-    private Map<NodeState, Map<List<NodeState>, Double>> allPaths = new HashMap<>();
-    private Map<NodeState, List<NodeState>> shortestPaths = new HashMap<>();
-    private double shortestLength;
+    private final Map<NodeState, List<NodeState>> shortestPaths = new HashMap<>();
 
     public NodeState( NodeNetwork network, World world, Block block, BlockPos pos )
     {
@@ -56,100 +54,7 @@ public class NodeState
 
     public void clearAllPaths()
     {
-        allPaths.clear();
         shortestPaths.clear();
-    }
-
-//    public NodeState getNextDestinationNode( NodeState destNode )
-//    {
-//        if( !sPaths.containsKey( destNode ) )
-//            createShortestPath( this, destNode );
-//
-//        return sPaths.get( destNode );
-//    }
-
-    public void createShortestPathTo( NodeState destNode )
-    {
-        if( shortestPaths.containsKey( destNode ) )
-            return;
-        shortestLength = Integer.MAX_VALUE;
-        List<NodeState> currPath = new ArrayList<>();
-        currPath.add( this );
-        recursiveFindPath( currPath, destNode, 0, new HashSet<>() );
-        if( allPaths.containsKey( destNode ) )
-        {
-            Map<List<NodeState>, Double> allDestPaths = allPaths.get( destNode );
-            List<List<NodeState>> allDestPathsKeys = new ArrayList<>( allDestPaths.keySet() );
-            allDestPathsKeys.sort( Comparator.comparingDouble( allDestPaths::get ) );
-            List<NodeState> shortestPath = allDestPathsKeys.get(0);
-//            shortestPaths.put( destNode, shortestPath );
-
-            int shortestPathSize = shortestPath.size();
-            for( int lIndex = 0; lIndex < shortestPathSize; lIndex++ )
-            {
-                for( int uIndex = 0; uIndex < shortestPathSize; uIndex++ )
-                {
-                    if( lIndex != uIndex )
-                    {
-                        NodeState fItem, lItem;
-                        if( lIndex > uIndex )
-                        {
-                            fItem = shortestPath.get( uIndex );
-                            lItem = shortestPath.get( lIndex );
-                            fItem.shortestPaths.put( lItem, Lists.reverse( shortestPath.subList( uIndex, lIndex+1 ) ) );
-//                            System.out.println( "a" );
-//                            System.out.println( "f: " + uIndex + ", l: " + lIndex );
-//                            System.out.println( shortestPath.subList( uIndex, lIndex+1 ) );
-                        }
-                        else
-                        {
-                            fItem = shortestPath.get( lIndex );
-                            lItem = shortestPath.get( uIndex );
-                            fItem.shortestPaths.put( lItem, shortestPath.subList( lIndex, uIndex+1 ) );
-//                            System.out.println( "b" );
-//                            System.out.println( "f: " + lIndex + ", l: " + uIndex );
-                        }
-//                        System.out.println( "Linko Startu!!" );
-                    }
-                }
-            }
-
-//            for( int lIndex = 0; lIndex < shortestPathSize; lIndex++ )
-//            {
-//                for( int uIndex = 0; uIndex < shortestPathSize; uIndex++ )
-//                {
-//                    boolean reverse = false;
-//                    NodeState node1 = shortestPath.get(lIndex);
-//                    NodeState node2 = shortestPath.get(uIndex);
-//                    if( node1.shortestPaths.containsKey( node2 ) )
-//                        continue;
-//                    List<NodeState> newPath;
-////                    System.out.println( lIndex + " " + uIndex );
-////                    System.out.println( "size: " + shortestPath.size() );
-//                    if( lIndex > uIndex )
-//                    {
-//                        newPath = Lists.reverse( shortestPath.subList( uIndex, lIndex+1 ) );
-//                        reverse = true;
-//                    }
-//                    else
-//                        newPath = shortestPath.subList( lIndex, uIndex+1 );
-//                    if( newPath.size() < 2 )
-//                        continue;
-////                    System.out.println( "new size: " + newPath.size() );
-////                    System.out.println( "linking new path" );
-//                    if( reverse )
-//                        setShortestPath( node2, node1, newPath );
-//                    else
-//                        setShortestPath( node1, node2, newPath );
-//                }
-//            }
-        }
-    }
-
-    @Deprecated
-    public Map<NodeState, Map<List<NodeState>, Double>> getAllPaths()
-    {
-        return allPaths;
     }
 
     @Deprecated
@@ -160,45 +65,87 @@ public class NodeState
 
     public List<NodeState> getShortestPath( NodeState destState )
     {
-        createShortestPathTo( destState );
+        List<NodeState> path = shortestPaths.get( destState );
+        if( path == null )
+        {
+            path = destState.getShortestPathDumb( this );
+            if( path != null )
+                path = Lists.reverse( path );
+            else
+            {
+                makeShortestPaths();
+                path = shortestPaths.get( destState );
+            }
+        }
+        return path;
+    }
+
+    private List<NodeState> getShortestPathDumb( NodeState destState )
+    {
         return shortestPaths.get( destState );
     }
 
-    public static void setShortestPath( NodeState originNode, NodeState destNode, List<NodeState> path )
+    public void makeShortestPaths()
     {
-        originNode.shortestPaths.put( destNode, path );
+        Map<NodeState, PathInfo> allPaths = new HashMap<>();
+        for( NodeState nodeState : network.getNodes( this.dim ) )
+        {
+            allPaths.put( nodeState, new PathInfo( new ArrayList<>(), Double.POSITIVE_INFINITY ) );
+        }
+        Set<NodeState> doneNodes = new HashSet<>();
+        doneNodes.add( this );
+        recursiveFindShortestPaths( new PathInfo( this, 0 ), doneNodes, allPaths );
+        shortestPaths.clear();
+        for( Map.Entry<NodeState, PathInfo> bestPath : allPaths.entrySet() )
+        {
+            cacheFullPath( bestPath.getValue().getPath() );
+        }
     }
 
-    private void recursiveFindPath( List<NodeState> currPath, NodeState destNode, double currWeight, Set<NodeState> doneNodes )
+    private void cacheFullPath( List<NodeState> shortestPath )
     {
-        NodeState thisNode = currPath.get( currPath.size()-1 );
-        if( thisNode.getPos().equals( destNode.getPos() ) )
+        int shortestPathSize = shortestPath.size();
+        for( int lIndex = 0; lIndex < shortestPathSize; lIndex++ )
         {
-            if( currPath.size() == 1 )
-                return;
-            if( currWeight < shortestLength )
+            for( int uIndex = 0; uIndex < shortestPathSize; uIndex++ )
             {
-                shortestLength = currWeight;
-                if( !allPaths.containsKey( thisNode ) )
-                    allPaths.put( thisNode, new HashMap<>() );
-                allPaths.get( thisNode ).put( currPath, currWeight );
+                NodeState fItem, lItem;
+                if( lIndex < uIndex )
+                {
+                    fItem = shortestPath.get( lIndex );
+                    lItem = shortestPath.get( uIndex );
+                    fItem.shortestPaths.put( lItem, shortestPath.subList( lIndex, uIndex+1 ) );
+//                    System.out.println( "b" );
+//                    System.out.println( "f: " + lIndex + ", l: " + uIndex );
+                }
             }
         }
-        else
+    }
+
+    private void recursiveFindShortestPaths( PathInfo pathInfo, Set<NodeState> doneNodes, Map<NodeState, PathInfo> allPaths )
+    {
+        List<NodeState> currPath = pathInfo.getPath();
+        NodeState thisNode = currPath.get( currPath.size()-1 );
+        PathInfo oldPathInfo = allPaths.get( thisNode );
+        if( pathInfo.getWeight() < oldPathInfo.getWeight() )
         {
-            for( Map.Entry<NodeState, Double> neighborNode : thisNode.getNeighbors().entrySet() )
+            allPaths.put( thisNode, pathInfo );
+            System.out.println( "Path Found" );
+        }
+
+//        System.out.println( "Recursive" );
+
+        for( Map.Entry<NodeState, Double> neighborNode : thisNode.getNeighbors().entrySet() )
+        {
+            if( !doneNodes.contains( neighborNode.getKey() ) )
             {
-                if( !doneNodes.contains( neighborNode.getKey() ) )
-                {
-                    double nextWeight = currWeight + neighborNode.getValue();
-                    if( nextWeight > shortestLength )
-                        continue;
-                    List<NodeState> nextPath = new ArrayList<>( currPath );
-                    Set<NodeState> nextDoneNodes = new HashSet<>( doneNodes );
-                    nextDoneNodes.add( thisNode );
-                    nextPath.add( neighborNode.getKey() );
-                    recursiveFindPath( nextPath, destNode, nextWeight, nextDoneNodes );
-                }
+                double nextWeight = pathInfo.getWeight() + neighborNode.getValue();
+                List<NodeState> nextPath = new ArrayList<>( currPath );
+                nextPath.add( neighborNode.getKey() );
+                Set<NodeState> nextDoneNodes = new HashSet<>( doneNodes );
+                nextDoneNodes.add( thisNode );
+                PathInfo nextPathInfo = new PathInfo( nextPath, nextWeight );
+                recursiveFindShortestPaths( nextPathInfo, nextDoneNodes, allPaths );
             }
         }
 //        System.out.println( "Dead End" );
@@ -222,6 +169,7 @@ public class NodeState
     @Override
     public String toString()
     {
-        return "[" + pos.getX() + ":" + pos.getY() + ":" + pos.getZ() + "]";
+//        return "[" + pos.getX() + ":" + pos.getY() + ":" + pos.getZ() + "]";
+        return "" + pos.getX() + pos.getY() + pos.getZ();
     }
 }

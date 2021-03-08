@@ -25,6 +25,10 @@ public class BlockPlaceHandler
         System.out.println( "Added to Network " + nodeNetwork.getId() );
 
         if( event.getPlacedBlock().getBlock().equals(Blocks.BEDROCK ) )
+        {
+            PlayerHandler.firstState = null;
+            PlayerHandler.lastState = null;
             Data.removeNodeNetwork( 1 );
+        }
     }
 }

@@ -64,7 +64,6 @@ public class PlayerHandler
                 }
                 else if( mainItem.equals( Items.NETHER_STAR ) && !world.isRemote() )
                 {
-                    System.out.println( "Star" );
                     Set<NodeState> nodes = network.getNodes( dimResLoc );
                     for( NodeState node : nodes )
                     {
