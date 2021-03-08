@@ -87,6 +87,7 @@ public class NodeState
 
     public void makeShortestPaths()
     {
+        long startTime = System.currentTimeMillis();
         Map<NodeState, PathInfo> allPaths = new HashMap<>();
         for( NodeState nodeState : network.getNodes( this.dim ) )
         {
@@ -100,6 +101,7 @@ public class NodeState
         {
             cacheFullPath( bestPath.getValue().getPath() );
         }
+        System.out.println( "Pathing took: " + ( System.currentTimeMillis() - startTime ) + "ms" );
     }
 
     private void cacheFullPath( List<NodeState> shortestPath )
@@ -126,14 +128,17 @@ public class NodeState
     {
         List<NodeState> currPath = pathInfo.getPath();
         NodeState thisNode = currPath.get( currPath.size()-1 );
+        if( shortestPaths.containsKey( thisNode ) )
+        {
+//            System.out.println( "Redundant pathing" );
+            return;
+        }
         PathInfo oldPathInfo = allPaths.get( thisNode );
         if( pathInfo.getWeight() < oldPathInfo.getWeight() )
         {
             allPaths.put( thisNode, pathInfo );
-            System.out.println( "Path Found" );
+//            System.out.println( "Path Found" );
         }
-
-//        System.out.println( "Recursive" );
 
         for( Map.Entry<NodeState, Double> neighborNode : thisNode.getNeighbors().entrySet() )
         {

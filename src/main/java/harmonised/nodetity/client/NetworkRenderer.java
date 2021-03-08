@@ -47,9 +47,16 @@ public class NetworkRenderer
             Map<BlockPos, Set<BlockPos>> bestPathLines = null;
             if( PlayerHandler.firstState != null && PlayerHandler.lastState != null )
             {
-                List<NodeState> shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
-                if( shortestPath != null )
-                    bestPathLines = getLinesFromNodeStates( new HashSet<>( shortestPath ), false );
+                if( PlayerHandler.firstState != PlayerHandler.lastState )
+                {
+                    List<NodeState> shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
+                    if( shortestPath != null )
+                        bestPathLines = getLinesFromNodeStates( new HashSet<>( shortestPath ), false );
+                    else
+                    {
+                        PlayerHandler.lastState = null;
+                    }
+                }
             }
             //END OF DEBUG
 
