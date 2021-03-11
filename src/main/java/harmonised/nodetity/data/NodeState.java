@@ -69,12 +69,15 @@ public class NodeState
         if( path == null )
         {
             path = destState.getShortestPathDumb( this );
-            if( path != null )
-                path = Lists.reverse( path );
-            else
+            if( path == null )
             {
                 makeShortestPaths();
                 path = shortestPaths.get( destState );
+            }
+            else
+            {
+                path = Lists.reverse( path );
+                shortestPaths.put( destState, path );
             }
         }
         return path;
