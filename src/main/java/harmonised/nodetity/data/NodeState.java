@@ -1,6 +1,7 @@
 package harmonised.nodetity.data;
 
 import com.google.common.collect.Lists;
+import harmonised.nodetity.events.WorldTickHandler;
 import harmonised.nodetity.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
@@ -57,7 +58,6 @@ public class NodeState
         shortestPaths.clear();
     }
 
-    @Deprecated
     public Map<NodeState, List<NodeState>> getShortestPaths()
     {
         return shortestPaths;
@@ -90,24 +90,26 @@ public class NodeState
 
     public void makeShortestPaths()
     {
-        long startTime = System.currentTimeMillis();
-        Map<NodeState, PathInfo> allPaths = new HashMap<>();
-        for( NodeState nodeState : network.getNodes( this.dim ) )
-        {
-            allPaths.put( nodeState, new PathInfo( new ArrayList<>(), Double.POSITIVE_INFINITY ) );
-        }
-        Set<NodeState> doneNodes = new HashSet<>();
-        doneNodes.add( this );
-        recursiveFindShortestPaths( new PathInfo( this, 0 ), doneNodes, allPaths );
-        shortestPaths.clear();
-        for( Map.Entry<NodeState, PathInfo> bestPath : allPaths.entrySet() )
-        {
-            cacheFullPath( bestPath.getValue().getPath() );
-        }
-        System.out.println( "Pathing took: " + ( System.currentTimeMillis() - startTime ) + "ms" );
+        WorldTickHandler.routeTasks.clear();
+        WorldTickHandler.addRouteTask( new RouteTask( this ) );
+//        long startTime = System.currentTimeMillis();
+//        Map<NodeState, PathInfo> allPaths = new HashMap<>();
+//        for( NodeState nodeState : network.getNodes( this.dim ) )
+//        {
+//            allPaths.put( nodeState, new PathInfo( new ArrayList<>(), Double.POSITIVE_INFINITY ) );
+//        }
+//        Set<NodeState> doneNodes = new HashSet<>();
+//        doneNodes.add( this );
+//        recursiveFindShortestPaths( new PathInfo( this, 0 ), doneNodes, allPaths );
+//        shortestPaths.clear();
+//        for( Map.Entry<NodeState, PathInfo> bestPath : allPaths.entrySet() )
+//        {
+//            cacheFullPath( bestPath.getValue().getPath() );
+//        }
+//        System.out.println( "Pathing took: " + ( System.currentTimeMillis() - startTime ) + "ms" );
     }
 
-    private void cacheFullPath( List<NodeState> shortestPath )
+    public void cacheFullPath( List<NodeState> shortestPath )
     {
         int shortestPathSize = shortestPath.size();
         for( int lIndex = 0; lIndex < shortestPathSize; lIndex++ )
@@ -127,37 +129,37 @@ public class NodeState
         }
     }
 
-    private void recursiveFindShortestPaths( PathInfo pathInfo, Set<NodeState> doneNodes, Map<NodeState, PathInfo> allPaths )
-    {
-        List<NodeState> currPath = pathInfo.getPath();
-        NodeState thisNode = currPath.get( currPath.size()-1 );
-        if( shortestPaths.containsKey( thisNode ) )
-        {
-//            System.out.println( "Redundant pathing" );
-            return;
-        }
-        PathInfo oldPathInfo = allPaths.get( thisNode );
-        if( pathInfo.getWeight() < oldPathInfo.getWeight() )
-        {
-            allPaths.put( thisNode, pathInfo );
-//            System.out.println( "Path Found" );
-        }
-
-        for( Map.Entry<NodeState, Double> neighborNode : thisNode.getNeighbors().entrySet() )
-        {
-            if( !doneNodes.contains( neighborNode.getKey() ) )
-            {
-                double nextWeight = pathInfo.getWeight() + neighborNode.getValue();
-                List<NodeState> nextPath = new ArrayList<>( currPath );
-                nextPath.add( neighborNode.getKey() );
-                Set<NodeState> nextDoneNodes = new HashSet<>( doneNodes );
-                nextDoneNodes.add( thisNode );
-                PathInfo nextPathInfo = new PathInfo( nextPath, nextWeight );
-                recursiveFindShortestPaths( nextPathInfo, nextDoneNodes, allPaths );
-            }
-        }
-//        System.out.println( "Dead End" );
-    }
+//    private void recursiveFindShortestPaths( PathInfo pathInfo, Set<NodeState> doneNodes, Map<NodeState, PathInfo> allPaths )
+//    {
+//        List<NodeState> currPath = pathInfo.getPath();
+//        NodeState thisNode = currPath.get( currPath.size()-1 );
+//        if( shortestPaths.containsKey( thisNode ) )
+//        {
+////            System.out.println( "Redundant pathing" );
+//            return;
+//        }
+//        PathInfo oldPathInfo = allPaths.get( thisNode );
+//        if( pathInfo.getWeight() < oldPathInfo.getWeight() )
+//        {
+//            allPaths.put( thisNode, pathInfo );
+////            System.out.println( "Path Found" );
+//        }
+//
+//        for( Map.Entry<NodeState, Double> neighborNode : thisNode.getNeighbors().entrySet() )
+//        {
+//            if( !doneNodes.contains( neighborNode.getKey() ) )
+//            {
+//                double nextWeight = pathInfo.getWeight() + neighborNode.getValue();
+//                List<NodeState> nextPath = new ArrayList<>( currPath );
+//                nextPath.add( neighborNode.getKey() );
+//                Set<NodeState> nextDoneNodes = new HashSet<>( doneNodes );
+//                nextDoneNodes.add( thisNode );
+//                PathInfo nextPathInfo = new PathInfo( nextPath, nextWeight );
+//                recursiveFindShortestPaths( nextPathInfo, nextDoneNodes, allPaths );
+//            }
+//        }
+////        System.out.println( "Dead End" );
+//    }
 
     public World getWorld()
     {
@@ -174,10 +176,25 @@ public class NodeState
         return neighbors;
     }
 
+    public double getDistanceToNeighbor( NodeState neighbor )
+    {
+        return neighbors.getOrDefault( neighbor, -1D );
+    }
+
     @Override
     public String toString()
     {
 //        return "[" + pos.getX() + ":" + pos.getY() + ":" + pos.getZ() + "]";
         return "" + pos.getX() + pos.getY() + pos.getZ();
+    }
+
+    public NodeNetwork getNetwork()
+    {
+        return network;
+    }
+
+    public ResourceLocation getDim()
+    {
+        return dim;
     }
 }

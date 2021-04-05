@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class Data
 {
-    public static Map<Integer, NodeNetwork> nodeNetworks = new HashMap<>();
+    private static Map<Integer, NodeNetwork> nodeNetworks = new HashMap<>();
 
     public static NodeNetwork findNearbyNodeNetwork( World world, BlockPos pos )
     {
@@ -53,6 +53,11 @@ public class Data
     {
         NodeNetwork nodeNetwork = findNearbyNodeNetwork( world, pos );
         return nodeNetwork == null ? createNodeNetwork( world, pos ) : nodeNetwork;
+    }
+
+    public static Map<Integer, NodeNetwork> getNodeNetworks()
+    {
+        return nodeNetworks;
     }
 
     public static NodeNetwork getNodeNetwork( int id )

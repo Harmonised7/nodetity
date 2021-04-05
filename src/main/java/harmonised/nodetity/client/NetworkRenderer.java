@@ -7,6 +7,7 @@ import harmonised.nodetity.data.Data;
 import harmonised.nodetity.data.NodeNetwork;
 import harmonised.nodetity.data.NodeState;
 import harmonised.nodetity.events.PlayerHandler;
+import harmonised.nodetity.events.WorldTickHandler;
 import harmonised.nodetity.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -15,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,10 +25,12 @@ import java.util.*;
 
 public class NetworkRenderer
 {
+    public static Minecraft mc = Minecraft.getInstance();
+    public static Set<NodeState> asyncPath = new HashSet<>();
+
     @SubscribeEvent
     public void handleRender( RenderWorldLastEvent event )
     {
-        Minecraft mc = Minecraft.getInstance();
         World world = mc.world;
         ResourceLocation resLoc = Util.getDimensionResLoc( world );
         Vector3d cameraCenter = mc.getRenderManager().info.getProjectedView();
@@ -38,18 +42,19 @@ public class NetworkRenderer
         IRenderTypeBuffer.Impl buffer = mc.getRenderTypeBuffers().getBufferSource();
         IVertexBuilder builder = buffer.getBuffer( RenderType.getLines() );
 
-        for( Map.Entry<Integer, NodeNetwork> entry : Data.nodeNetworks.entrySet() )
+        for( Map.Entry<Integer, NodeNetwork> entry : Data.getNodeNetworks().entrySet() )
         {
             NodeNetwork nodeNetwork = entry.getValue();
             Set<NodeState> nodeStates = nodeNetwork.getNodes( resLoc );
             Map<BlockPos, Set<BlockPos>> lines = getLinesFromNodeStates( nodeStates, true );
             //DEBUG
             Map<BlockPos, Set<BlockPos>> bestPathLines = null;
+            List<NodeState> shortestPath = null;
             if( PlayerHandler.firstState != null && PlayerHandler.lastState != null )
             {
                 if( PlayerHandler.firstState != PlayerHandler.lastState )
                 {
-                    List<NodeState> shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
+                    shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
                     if( shortestPath != null )
                         bestPathLines = getLinesFromNodeStates( new HashSet<>( shortestPath ), false );
                     else
@@ -61,8 +66,20 @@ public class NetworkRenderer
             //END OF DEBUG
 
             drawLines( stack, matrix4f, builder, lines, 255, 0, 255, 200 );
+            for( NodeState nodeState : asyncPath )
+            {
+                drawBoxHighlight( stack, builder, nodeState.getPos() );
+            }
+            drawLines( stack, matrix4f, builder, getLinesFromNodeStates( asyncPath, false ), 255, 255, 255, 255 );
+
             if( bestPathLines != null )
+            {
+                for( NodeState nodeState : shortestPath )
+                {
+                    drawBoxHighlight( stack, builder, nodeState.getPos() );
+                }
                 drawLines( stack, matrix4f, builder, bestPathLines, 255, 255, 255, 255 );
+            }
         }
 
         stack.pop();
@@ -87,6 +104,41 @@ public class NetworkRenderer
                 stack.pop();
             }
         }
+    }
+
+    public static void drawBoxHighlight( MatrixStack stack, IVertexBuilder builder, BlockPos blockPos )
+    {
+        stack.push();
+        Matrix4f matrix4f = stack.getLast().getMatrix();
+        int red = 255;
+        int green = 0;
+        int blue = 255;
+        int alpha = 255;
+        Vector3f pos = new Vector3f( blockPos.getX() - 0.5f, blockPos.getY() - 0.5f, blockPos.getZ() - 0.5f );
+
+        for( int i = 0; i < 12; i++ )
+        {
+            int mode = i/4, j = i%4;
+            float modulus = j%2, divide = j/2;
+            switch( mode )
+            {
+                case 0:
+                    builder.pos( matrix4f, pos.getX() + modulus, pos.getY() + divide, pos.getZ() ).color( red, green, blue, alpha ).endVertex();
+                    builder.pos( matrix4f, pos.getX() + modulus, pos.getY() + divide, pos.getZ() + 1 ).color( red, green, blue, alpha ).endVertex();
+                    break;
+
+                case 1:
+                    builder.pos( matrix4f, pos.getX(), pos.getY() + modulus, pos.getZ() + divide ).color( red, green, blue, alpha ).endVertex();
+                    builder.pos( matrix4f, pos.getX() + 1, pos.getY() + modulus, pos.getZ() + divide ).color( red, green, blue, alpha ).endVertex();
+                    break;
+
+                case 2:
+                    builder.pos( matrix4f, pos.getX() + divide, pos.getY(), pos.getZ() + modulus ).color( red, green, blue, alpha ).endVertex();
+                    builder.pos( matrix4f, pos.getX() + divide, pos.getY() + 1, pos.getZ() + modulus ).color( red, green, blue, alpha ).endVertex();
+                    break;
+            }
+        }
+        stack.pop();
     }
 
     public static void drawLinesGradient( MatrixStack stack, Matrix4f matrix4f, IVertexBuilder builder, Map<BlockPos, Set<BlockPos>> lines, float red, float green, float blue, int alpha )

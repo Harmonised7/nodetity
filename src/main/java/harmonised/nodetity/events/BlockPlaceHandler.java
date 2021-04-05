@@ -4,6 +4,7 @@ import harmonised.nodetity.data.Data;
 import harmonised.nodetity.data.NodeNetwork;
 import harmonised.nodetity.data.NodeState;
 import harmonised.nodetity.util.Util;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -15,6 +16,7 @@ public class BlockPlaceHandler
     {
         World world = (World) event.getWorld();
         NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
+        Block block = event.getPlacedBlock().getBlock();
         ResourceLocation dimResLoc = Util.getDimensionResLoc( world );
 
         if( nodeNetwork == null )
@@ -24,7 +26,7 @@ public class BlockPlaceHandler
         nodeNetwork.reconstructNetwork( dimResLoc );
         System.out.println( "Added to Network " + nodeNetwork.getId() );
 
-        if( event.getPlacedBlock().getBlock().equals(Blocks.BEDROCK ) )
+        if( block.equals( Blocks.BEDROCK ) )
         {
             PlayerHandler.firstState = null;
             PlayerHandler.lastState = null;

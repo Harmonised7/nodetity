@@ -112,6 +112,8 @@ dependencies
 
             compileOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.66:api")
             runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:7.6.1.66")
+
+
 //            runtimeOnly fg.deobf("curse.maven:jei:3039766")
 //            runtimeOnly fg.deobf("curse.maven:ores-and-metals:2967502")
 //            runtimeOnly fg.deobf("curse.maven:curio-of-undying:2994182")

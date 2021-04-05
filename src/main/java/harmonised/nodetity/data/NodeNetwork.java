@@ -52,7 +52,6 @@ public class NodeNetwork
             if( nodeState.getPos().equals( pos ) )
                 return nodeState;
         }
-
         return null;
     }
 
