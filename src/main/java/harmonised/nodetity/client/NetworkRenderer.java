@@ -26,7 +26,7 @@ import java.util.*;
 public class NetworkRenderer
 {
     public static Minecraft mc = Minecraft.getInstance();
-    public static Set<NodeState> asyncPath = new HashSet<>();
+    public static List<NodeState> asyncPath = new ArrayList<>();
 
     @SubscribeEvent
     public void handleRender( RenderWorldLastEvent event )
@@ -42,6 +42,10 @@ public class NetworkRenderer
         IRenderTypeBuffer.Impl buffer = mc.getRenderTypeBuffers().getBufferSource();
         IVertexBuilder builder = buffer.getBuffer( RenderType.getLines() );
 
+//        System.out.println( PlayerHandler.firstState == null );
+//        System.out.println( PlayerHandler.lastState == null );
+//        System.out.println();
+
         for( Map.Entry<Integer, NodeNetwork> entry : Data.getNodeNetworks().entrySet() )
         {
             NodeNetwork nodeNetwork = entry.getValue();
@@ -54,23 +58,40 @@ public class NetworkRenderer
             {
                 if( PlayerHandler.firstState != PlayerHandler.lastState )
                 {
-                    shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
+
+                    if( WorldTickHandler.routeTasks.size() == 0 )
+                        shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
                     if( shortestPath != null )
                         bestPathLines = getLinesFromNodeStates( new HashSet<>( shortestPath ), false );
-                    else
-                    {
-                        PlayerHandler.lastState = null;
-                    }
                 }
             }
             //END OF DEBUG
 
             drawLines( stack, matrix4f, builder, lines, 255, 0, 255, 200 );
-            for( NodeState nodeState : asyncPath )
+            try
             {
-                drawBoxHighlight( stack, builder, nodeState.getPos() );
+                BlockPos thisPos, nextPos;
+                for( NodeState nodeState : asyncPath )
+                {
+                    drawBoxHighlight( stack, builder, nodeState.getPos() );
+                }
+                for( int i = 0; i < asyncPath.size(); i++ )
+                {
+                    if( asyncPath.size() > i+1 )
+                    {
+                        thisPos = asyncPath.get( i ).getPos();
+                        nextPos = asyncPath.get( i+1 ).getPos();
+                        stack.push();
+                        builder.pos( matrix4f, thisPos.getX(), thisPos.getY(), thisPos.getZ() ).color( 255, 255, 255, 255 ).endVertex();
+                        builder.pos( matrix4f, nextPos.getX(), nextPos.getY(), nextPos.getZ() ).color( 255, 255, 255, 255 ).endVertex();
+                        stack.pop();
+                    }
+                }
             }
-            drawLines( stack, matrix4f, builder, getLinesFromNodeStates( asyncPath, false ), 255, 255, 255, 255 );
+            catch( Exception e )
+            {
+
+            }
 
             if( bestPathLines != null )
             {
@@ -111,7 +132,7 @@ public class NetworkRenderer
         stack.push();
         Matrix4f matrix4f = stack.getLast().getMatrix();
         int red = 255;
-        int green = 0;
+        int green = 255;
         int blue = 255;
         int alpha = 255;
         Vector3f pos = new Vector3f( blockPos.getX() - 0.5f, blockPos.getY() - 0.5f, blockPos.getZ() - 0.5f );
@@ -164,33 +185,34 @@ public class NetworkRenderer
     public static Map<BlockPos, Set<BlockPos>> getLinesFromNodeStates( Set<NodeState> nodeStates, boolean drawNeighbors )
     {
         Map<BlockPos, Set<BlockPos>> lines = new HashMap<>();
-        for( NodeState thisNodeState : nodeStates )
+        try
         {
-            BlockPos thisNodePos = thisNodeState.getPos();
-            Set<NodeState> nearbyNodes = thisNodeState.getNeighbors().keySet();
-            try
+            for( NodeState thisNodeState : nodeStates )
             {
-                for( NodeState nextNodeState : nearbyNodes )
-                {
-                    if( !drawNeighbors && !nodeStates.contains( nextNodeState ) )
-                        continue;
-                    BlockPos nextNodePos = nextNodeState.getPos();
-                    Set<BlockPos> posSet = lines.get( thisNodePos );
-                    if( posSet == null )
+                BlockPos thisNodePos = thisNodeState.getPos();
+                Set<NodeState> nearbyNodes = thisNodeState.getNeighbors().keySet();
+                    for( NodeState nextNodeState : nearbyNodes )
                     {
-                        lines.put( thisNodePos, new HashSet<>() );
-                        posSet = lines.get( thisNodePos );
+                        if( !drawNeighbors && !nodeStates.contains( nextNodeState ) )
+                            continue;
+                        BlockPos nextNodePos = nextNodeState.getPos();
+                        Set<BlockPos> posSet = lines.get( thisNodePos );
+                        if( posSet == null )
+                        {
+                            lines.put( thisNodePos, new HashSet<>() );
+                            posSet = lines.get( thisNodePos );
+                        }
+                        if( !( lines.containsKey( thisNodePos ) && lines.get( thisNodePos ).contains( nextNodePos ) ||
+                                lines.containsKey( nextNodePos ) && lines.get( nextNodePos ).contains( thisNodePos ) ) )
+                            posSet.add( nextNodePos );
                     }
-                    if( !( lines.containsKey( thisNodePos ) && lines.get( thisNodePos ).contains( nextNodePos ) ||
-                            lines.containsKey( nextNodePos ) && lines.get( nextNodePos ).contains( thisNodePos ) ) )
-                        posSet.add( nextNodePos );
-                }
+
             }
-            catch( Exception e )
-            {
-                System.out.println( "For some reason, this crashes..?" );
-                e.printStackTrace();
-            }
+        }
+        catch( Exception e )
+        {
+            System.out.println( "For some reason, this crashes..?" );
+            e.printStackTrace();
         }
         return lines;
     }

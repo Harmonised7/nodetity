@@ -18,17 +18,17 @@ public class WorldTickHandler
     public static void handleWorldTick( WorldTickEvent event )
     {
         tickCounter++;
-        if( tickCounter % 100 == 0 )
-        {
+//        if( tickCounter % 10 == 0 )
+//        {
             int i = 0;
             while( routeTasks.size() > i )
             {
-                if( routeTasks.get( i ).process( 1 ) )
+                if( routeTasks.get( i ).process( 50000 ) )
                     routeTasks.remove( i );
                 else
                     i++;
             }
-        }
+//        }
     }
 
     public static void addRouteTask( RouteTask routeTask )

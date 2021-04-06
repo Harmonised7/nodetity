@@ -51,36 +51,39 @@ public class RouteTask
 
     private boolean doTick()
     {
-        System.out.println( "i: " + i );
+//        System.out.println( "i: " + i );
         RouteMemory currMemory = memoryStack.get( i );
         NodeState currNode = currMemory.getCurrNode();
         RouteMemory nextMemory = currMemory.getNextRouteMemory();
 
         if( nextMemory == null )
         {
-            System.out.println( "Removing Memory " + i );
+//            System.out.println( "Removing Memory " + i );
             memoryStack.remove( i );
             currPath.pop();
-            NetworkRenderer.asyncPath = new HashSet<>( currPath.getPath() );
+            NetworkRenderer.asyncPath = currPath.getPath();
             i--;
             return i < 0;
         }
         else
         {
-
             NodeState nextNode = nextMemory.getCurrNode();
             if( currPath.contains( nextNode ) )
             {
-                System.out.println( "Skipping Done Node" );
+//                System.out.println( "Skipping Done Node" );
                 return false;
             }
+//            System.out.println( "Adding Memory " + i );
+            boolean pathExists = originAllPaths.containsKey( nextNode );
+            double distToNext = nextNode.getDistanceToNeighbor( currNode );
+            if( pathExists && currPath.getWeight() + distToNext > originAllPaths.get( nextNode ).getWeight() )
+                return false;
             i++;
-            System.out.println( "Adding Memory " + i );
             memoryStack.add( nextMemory );
-            currPath.push( nextNode, nextNode.getDistanceToNeighbor( currNode ) );
-            if( !originAllPaths.containsKey( nextNode ) || originAllPaths.get( nextNode ).getWeight() > currPath.getWeight() )
-                originAllPaths.put( nextNode, new PathInfo( currPath.getPath(), currPath.getWeight() ) );
-            NetworkRenderer.asyncPath = new HashSet<>( currPath.getPath() );
+            currPath.push( nextNode, distToNext );
+            if( !pathExists || originAllPaths.get( nextNode ).getWeight() > currPath.getWeight() )
+                originAllPaths.put( nextNode, new PathInfo( new ArrayList<>( currPath.getPath() ), currPath.getWeight() ) );
+            NetworkRenderer.asyncPath = currPath.getPath();
             return false;
         }
     }

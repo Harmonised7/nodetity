@@ -1,9 +1,11 @@
 package harmonised.nodetity.events;
 
+import harmonised.nodetity.client.NetworkRenderer;
 import harmonised.nodetity.data.Data;
 import harmonised.nodetity.data.NodeNetwork;
 import harmonised.nodetity.data.NodeState;
 import harmonised.nodetity.util.Util;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -60,23 +62,36 @@ public class PlayerHandler
                 if( mainItem.equals( Items.ARROW ) )
                 {
                     firstState = network.getNode( dimResLoc, pos );
+                    WorldTickHandler.routeTasks.clear();
+                    NetworkRenderer.asyncPath.clear();
                     System.out.println( "First NodeState set" );
                 }
                 else if( mainItem.equals( Items.NETHER_STAR ) && !world.isRemote() )
                 {
-                    Set<NodeState> nodes = network.getNodes( dimResLoc );
-                    for( NodeState node : nodes )
+//                    Set<NodeState> nodes = network.getNodes( dimResLoc );
+//                    for( NodeState node : nodes )
+//                    {
+//                        if( node.getShortestPaths().size() > 0 )
+//                        {
+//                            System.out.println( "Shortest Paths Found" );
+//                        }
+//                    }
+                    NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
+                    int radius = 20;
+                    for( int i = 0; i < 500; i++ )
                     {
-                        if( node.getShortestPaths().size() > 0 )
-                        {
-                            System.out.println( "Shortest Paths Found" );
-                        }
+                        BlockPos blockPos = new BlockPos( pos.getX() + (int) ( Math.random() * radius * 2 - radius ), pos.getY() + (int) ( Math.random() * radius * 2 - radius ), pos.getZ() + (int) ( Math.random() * radius * 2 - radius ) );
+                        world.setBlockState( blockPos, Blocks.SPONGE.getDefaultState() );
+                        nodeNetwork.addNode( dimResLoc, new NodeState( nodeNetwork, world, Blocks.SPONGE, blockPos ) );
                     }
+                    nodeNetwork.reconstructNetwork( dimResLoc );
                 }
             }
             else if( event.getHand().equals( Hand.OFF_HAND ) && offItem.equals( Items.ARROW ) )
             {
                 lastState = network.getNode( dimResLoc, pos );
+                WorldTickHandler.routeTasks.clear();
+                NetworkRenderer.asyncPath.clear();
                 System.out.println( "Last NodeState set" );
             }
         }

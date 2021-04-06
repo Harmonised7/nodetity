@@ -33,6 +33,7 @@ public class ReusePathInfo
 
     public void push( NodeState state, double weight )
     {
+        this.weight += weight;
         path.add( state );
         weights.put( state, weight );
         nodes.add( state );

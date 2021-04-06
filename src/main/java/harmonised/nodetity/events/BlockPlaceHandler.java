@@ -1,5 +1,6 @@
 package harmonised.nodetity.events;
 
+import harmonised.nodetity.client.NetworkRenderer;
 import harmonised.nodetity.data.Data;
 import harmonised.nodetity.data.NodeNetwork;
 import harmonised.nodetity.data.NodeState;
