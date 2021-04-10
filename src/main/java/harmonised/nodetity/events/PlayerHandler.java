@@ -62,8 +62,6 @@ public class PlayerHandler
                 if( mainItem.equals( Items.ARROW ) )
                 {
                     firstState = network.getNode( dimResLoc, pos );
-                    WorldTickHandler.routeTasks.clear();
-                    NetworkRenderer.asyncPath.clear();
                     System.out.println( "First NodeState set" );
                 }
                 else if( mainItem.equals( Items.NETHER_STAR ) && !world.isRemote() )
@@ -77,8 +75,8 @@ public class PlayerHandler
 //                        }
 //                    }
                     NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
-                    int radius = 20;
-                    for( int i = 0; i < 500; i++ )
+                    int radius = 30;
+                    for( int i = 0; i < 2000; i++ )
                     {
                         BlockPos blockPos = new BlockPos( pos.getX() + (int) ( Math.random() * radius * 2 - radius ), pos.getY() + (int) ( Math.random() * radius * 2 - radius ), pos.getZ() + (int) ( Math.random() * radius * 2 - radius ) );
                         world.setBlockState( blockPos, Blocks.SPONGE.getDefaultState() );
@@ -90,8 +88,6 @@ public class PlayerHandler
             else if( event.getHand().equals( Hand.OFF_HAND ) && offItem.equals( Items.ARROW ) )
             {
                 lastState = network.getNode( dimResLoc, pos );
-                WorldTickHandler.routeTasks.clear();
-                NetworkRenderer.asyncPath.clear();
                 System.out.println( "Last NodeState set" );
             }
         }
