@@ -23,7 +23,7 @@ public class WorldTickHandler
             int i = 0;
             while( routeTasks.size() > i )
             {
-                if( routeTasks.get( i ).process( 50000 ) )
+                if( routeTasks.get( i ).process( 1 ) )
                     routeTasks.remove( i );
                 else
                     i++;

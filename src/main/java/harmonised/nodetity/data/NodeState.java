@@ -65,13 +65,15 @@ public class NodeState
 
     public List<NodeState> getShortestPath( NodeState destState )
     {
-        List<NodeState> path = shortestPaths.get( destState );
+        List<NodeState> path = getShortestPathDumb( destState );
         if( path == null )
         {
             path = destState.getShortestPathDumb( this );
             if( path == null )
             {
-                makeShortestPaths();
+//                makeShortestPaths();
+                WorldTickHandler.routeTasks.clear();
+                WorldTickHandler.addRouteTask( new RouteTask( this, destState ) );
                 path = shortestPaths.get( destState );
             }
             else
@@ -83,15 +85,16 @@ public class NodeState
         return path;
     }
 
-    private List<NodeState> getShortestPathDumb( NodeState destState )
+    public List<NodeState> getShortestPathDumb( NodeState destState )
     {
         return shortestPaths.get( destState );
     }
 
     public void makeShortestPaths()
     {
-        WorldTickHandler.routeTasks.clear();
-        WorldTickHandler.addRouteTask( new RouteTask( this ) );
+//        WorldTickHandler.routeTasks.clear();
+//        WorldTickHandler.addRouteTask( new RouteTask( this ) );
+
 //        long startTime = System.currentTimeMillis();
 //        Map<NodeState, PathInfo> allPaths = new HashMap<>();
 //        for( NodeState nodeState : network.getNodes( this.dim ) )

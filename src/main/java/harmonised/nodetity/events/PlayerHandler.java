@@ -76,9 +76,9 @@ public class PlayerHandler
 //                    }
                     NodeNetwork nodeNetwork = Data.getNodeNetwork( 1 );
                     int radius = 30;
-                    for( int i = 0; i < 2000; i++ )
+                    for( int i = 0; i < 1000; i++ )
                     {
-                        BlockPos blockPos = new BlockPos( pos.getX() + (int) ( Math.random() * radius * 2 - radius ), pos.getY() + (int) ( Math.random() * radius * 2 - radius ), pos.getZ() + (int) ( Math.random() * radius * 2 - radius ) );
+                        BlockPos blockPos = new BlockPos( pos.getX() + (int) ( Math.random() * radius * 2 - radius ), pos.getY() + (int) ( Math.random() * radius / 2 - radius ), pos.getZ() + (int) ( Math.random() * radius * 2 - radius ) );
                         world.setBlockState( blockPos, Blocks.SPONGE.getDefaultState() );
                         nodeNetwork.addNode( dimResLoc, new NodeState( nodeNetwork, world, Blocks.SPONGE, blockPos ) );
                     }
@@ -89,6 +89,13 @@ public class PlayerHandler
             {
                 lastState = network.getNode( dimResLoc, pos );
                 System.out.println( "Last NodeState set" );
+                if( firstState != null && lastState != null )
+                {
+                    firstState.clearAllPaths();
+                    lastState.clearAllPaths();
+                    firstState.getShortestPath( lastState );
+                    System.out.println( "Pathing" );
+                }
             }
         }
     }

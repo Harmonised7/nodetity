@@ -52,55 +52,65 @@ public class NetworkRenderer
             Set<NodeState> nodeStates = nodeNetwork.getNodes( resLoc );
             Map<BlockPos, Set<BlockPos>> lines = getLinesFromNodeStates( nodeStates, true );
             //DEBUG
-            Map<BlockPos, Set<BlockPos>> bestPathLines = null;
-            List<NodeState> shortestPath = null;
-            if( PlayerHandler.firstState != null && PlayerHandler.lastState != null )
-            {
-                if( PlayerHandler.firstState != PlayerHandler.lastState )
-                {
-
-                    if( WorldTickHandler.routeTasks.size() == 0 )
-                        shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
-                    if( shortestPath != null )
-                        bestPathLines = getLinesFromNodeStates( new HashSet<>( shortestPath ), false );
-                }
-            }
+//            Map<BlockPos, Set<BlockPos>> bestPathLines = null;
+//            List<NodeState> shortestPath = null;
+//            if( PlayerHandler.firstState != null && PlayerHandler.lastState != null )
+//            {
+//                if( PlayerHandler.firstState != PlayerHandler.lastState )
+//                {
+//
+//                    if( WorldTickHandler.routeTasks.size() == 0 )
+//                        shortestPath = PlayerHandler.firstState.getShortestPath( PlayerHandler.lastState );
+//                    if( shortestPath != null )
+//                        bestPathLines = getLinesFromNodeStates( new HashSet<>( shortestPath ), false );
+//                }
+//            }
             //END OF DEBUG
 
             drawLines( stack, matrix4f, builder, lines, 255, 0, 255, 200 );
-            try
+            if( PlayerHandler.firstState != null && PlayerHandler.lastState != null )
             {
-                BlockPos thisPos, nextPos;
-                for( NodeState nodeState : asyncPath )
+                if( asyncPath == null || asyncPath.size() == 0 )
+                    asyncPath = PlayerHandler.firstState.getShortestPathDumb( PlayerHandler.lastState );
+                if( asyncPath != null )
                 {
-                    drawBoxHighlight( stack, builder, nodeState.getPos() );
-                }
-                for( int i = 0; i < asyncPath.size(); i++ )
-                {
-                    if( asyncPath.size() > i+1 )
+                    try
                     {
-                        thisPos = asyncPath.get( i ).getPos();
-                        nextPos = asyncPath.get( i+1 ).getPos();
-                        stack.push();
-                        builder.pos( matrix4f, thisPos.getX(), thisPos.getY(), thisPos.getZ() ).color( 255, 255, 255, 255 ).endVertex();
-                        builder.pos( matrix4f, nextPos.getX(), nextPos.getY(), nextPos.getZ() ).color( 255, 255, 255, 255 ).endVertex();
-                        stack.pop();
+//                        System.out.println( asyncPath.size() );
+                        BlockPos thisPos, nextPos;
+                        for( NodeState nodeState : asyncPath )
+                        {
+                            drawBoxHighlight( stack, builder, nodeState.getPos() );
+                        }
+                        for( int i = 0; i < asyncPath.size(); i++ )
+                        {
+                            if( asyncPath.size() > i+1 )
+                            {
+                                thisPos = asyncPath.get( i ).getPos();
+                                nextPos = asyncPath.get( i+1 ).getPos();
+                                stack.push();
+                                builder.pos( matrix4f, thisPos.getX(), thisPos.getY(), thisPos.getZ() ).color( 255, 255, 255, 255 ).endVertex();
+                                builder.pos( matrix4f, nextPos.getX(), nextPos.getY(), nextPos.getZ() ).color( 255, 255, 255, 255 ).endVertex();
+                                stack.pop();
+                            }
+                        }
+                    }
+                    catch( Exception e )
+                    {
+
                     }
                 }
-            }
-            catch( Exception e )
-            {
 
             }
 
-            if( bestPathLines != null )
-            {
-                for( NodeState nodeState : shortestPath )
-                {
-                    drawBoxHighlight( stack, builder, nodeState.getPos() );
-                }
-                drawLines( stack, matrix4f, builder, bestPathLines, 255, 255, 255, 255 );
-            }
+//            if( bestPathLines != null )
+//            {
+//                for( NodeState nodeState : shortestPath )
+//                {
+//                    drawBoxHighlight( stack, builder, nodeState.getPos() );
+//                }
+//                drawLines( stack, matrix4f, builder, bestPathLines, 255, 255, 255, 255 );
+//            }
         }
 
         stack.pop();
